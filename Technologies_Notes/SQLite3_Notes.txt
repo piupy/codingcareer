@@ -1,0 +1,51 @@
+
+import sqlite3 as sql
+db = sql.connect('db.sqlite')
+db.execute('''create table t
+           (
+               id int,
+               name varchar(20),
+               salary float
+           );
+           ''')
+db.commit()
+
+
+#---------------- retrieval -----------------------------
+
+table = db.execute('select * from t')
+rows = table.fetchall()
+print(rows)
+
+
+#------------------ insertion ---------------------------
+
+data = (5,'Vineet',16000)
+db.execute('insert into t values(?,?,?)',data)
+db.commit()
+
+
+#---------------- inserting multiple rows ----------------
+
+data = [(5,'Vineet',16000),
+        (6,'Naveen',17000),
+        (7,'Mayank',18000)
+       ]
+db.executemany('insert into t values(?,?,?)',data)
+db.commit()
+
+
+#----------------- updation -------------------------------
+
+data = ('Vipul',17000,5)
+db.execute('update t set name=?,salary=? where id=?',data)
+db.commit()
+
+
+#------------------ deletion ------------------------------
+
+data = (5,)
+db.execute('delete from t where id=?',data)
+db.commit()
+
+

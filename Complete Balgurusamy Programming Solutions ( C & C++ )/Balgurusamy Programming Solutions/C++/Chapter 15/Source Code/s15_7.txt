@@ -1,0 +1,34 @@
+#include<iostream>
+#include<cstdio>
+#include<conio.h>
+#include<cstring>
+using namespace std;
+
+int main(void)
+{
+	string s;
+	char search;
+	cout<<"Enter The Line of Text :    ";
+	int i,count=0;
+	getline(cin,s);
+	cout<<"\n\nYou Entered :   "<<s;
+	cout<<"\n\nEnter The Starting Char Whose String You Want To Search :    ";
+	cin>>search;
+		for(i=0;i<s.length();i++)
+		{
+			if( s.at(i) == search )
+				{
+					if( i == 0 and s.at(i) == search )
+						count++;
+					else if( s.at(i-1) == ' ' )
+						count++;
+				}
+		}
+	if( count == 0 )
+		cout<<"\n\nNo Word Found Starting With \'"<<search<<"\' in The Line.\n\n";
+	else
+		cout<<"\n\n"<<count<<" Words Found Starting With \'"<<search<<"\' in The Line.\n\n";
+	cout<<"\n\nPress Any Key To Continue...";
+	getch();
+	return(0);
+}

@@ -1,0 +1,24 @@
+
+// Finding an element in a Binary Search Tree
+
+struct BSTNode
+{
+ struct BSTNode *left;
+ int info;
+ struct BSTNode *right;
+};
+
+typedef struct BSTNode node;
+
+node* find(node *root,int data)
+{
+ if(root == NULL)
+  return NULL;
+ 
+ if(data < root->info)
+  return find(root->left,data);
+ else if(data > root->info)
+  return find(root->right,data);
+
+ return root;
+}

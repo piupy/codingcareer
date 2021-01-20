@@ -1,0 +1,366 @@
+
+>>>>>>>>>>>>>>>>>>>>>>> PANDAS notes <<<<<<<<<<<<<<<<<<<<<<<<<
+
+
+pip install numpy :  install numpy
+
+pip install pandas :  install pandas
+
+pip install jupyter :  install jupyter
+
+pip install --upgrade jupyter :  to upgrade to the latest version of jupyter
+
+python -m pip install jupyter :  to install jupyter in the current python version only
+				 (in case multiple versions of python are installed in the system)
+
+
+jupyter notebook : to launch the notebook server in the browser
+
+
+dict1 = {
+    'name' : ['harry','rohan','shubham','amit'],
+    'marks':[10,12,14,16],
+    'city':['delhi','mumbai','goa','patna']
+}
+
+
+>>>>>>>>>  another way of creating a DataFrame 
+
+
+dict1 = [
+     		{ 'name' : 'amit', 'marks' : 10, 'city' : 'delhi' },
+     		{ 'name' : 'sumit', 'marks' : 20, 'city' : 'mumbai' },
+     		{ 'name' : 'puneet', 'marks' : 30, 'city' : 'goa' },
+     		{ 'name' : 'rohit', 'marks' : 40, 'city' : 'bengaluru' }
+        ]
+
+
+
+pd.DataFrame(dict1) : to create a dataframe (in the form of a table)
+
+df = pd.DataFrame(dict1) : to use for future purposes
+
+
+df['name'] : to get the values at key='name'
+
+df['name'][0] : to get the values at key='name' and index=0 (index can be of any type)
+
+
+df.to_csv('friends.csv') : to dump the data into a .csv file
+
+
+df.to_csv('friends.csv',index=False) : in case, index is not required
+
+df.to_csv('friends.csv',index=True) : index is True by default
+
+df.head() : to check top rows (5 rows by default)
+
+df.head(2) : to check top 2 rows
+
+df.tail() : to check bottom rows (5 rows by default)
+
+df.tail(2) : to check bottom 2 rows
+
+
+df.describe() : to show the count,mean,std,min,25%,50%,75%,max of the columns of numeric types
+
+
+trains = {
+    'no' : [101,102,103,104],
+    'seats':[10,12,14,16],
+    'city':['delhi','mumbai','goa','patna']
+}
+
+
+dftrains = pd.DataFrame(trains)
+
+dftrains.to_csv('trains.csv')
+
+dftrains['seats'] : list of seats
+
+dftrains['seats'][1] : seat at index 2
+
+dftrains['seats'][1] = 24 : to update the value 
+
+dftrains.to_csv('trains.csv') : to save the changes in the file
+
+trains = pd.read_csv('trains.csv') : to read a file (it returns a DataFrame)
+
+friends.index = ['1st','2nd','3rd','4th']   : to create custom indexes in DataFrame
+
+friends.index = [i+101 for i in range(len(friends))] :  to create custom indexes in DataFrame through
+							code
+
+
+friends.columns = list('ABCDE')   : to change the names of the columns
+
+Series : single column
+
+DataFrame : whole table
+
+
+ser = pd.Series(np.random.rand(34)) : to create a series with indexes till 34 and random numbers as 
+					the values
+
+
+newdf = pd.DataFrame(np.random.rand(334,5), index=np.arange(334)) : using numpy's range function
+
+to create a DataFrame of 334 rows and 5 columns and setting the index at the same time 
+
+newdf = pd.DataFrame(np.random.rand(434,5), index=range(434)) : using python's range function
+
+
+newdf.dtypes : to check the datatypes of the columns
+
+newdf[1][2] : value present at 1st column and 2nd row (column 2, row 3)
+
+newdf[1][2] = 12 : to change the value
+
+
+newdf.index : to get the indexes
+
+newdf.columns : to get the columns 
+
+newdf.to_numpy() : to convert into numpy array
+
+newdf.T : to find the transpose (convert row into column and vice-versa)
+
+
+newdf.sort_index(axis=1,ascending=False) : to sort by the columns in descending order 
+
+newdf.sort_index(axis=1) : to sort by the columns in ascending order 
+
+newdf.sort_index(axis=0,ascending=False) : to sort by the rows in descending order 
+
+newdf.sort_index(axis=0) : to sort by the rows in descending order 
+
+newdf2 = newdf  : to create a view of original DataFrame
+
+newdf2 = newdf.copy()  or newdf[:] or newdf[::]  : to copy a DataFrame from an existing one
+
+It is difficult to trace if view or copy is returned so, to set the values use :
+
+newdf.loc[0,'A'] = 12  :  ( 0 >>>> Row, 'A' >>>> Column )
+
+
+newdf = newdf.drop(0) : to drop a row (0 >>>>>> row)
+
+del newdf[0] : to drop a column using python's "del" function
+
+
+newdf = newdf.drop(0,axis=1) : to drop a column (0 >>>>>> column)
+
+newdf = newdf.drop(0,axis=0) : to drop a row (0 >>>>>> row)
+
+
+newdf.loc[[1,2],['C','D']] : to get selected rows and columns
+
+
+[1,2] >>>>>>>>> rows
+
+['C','D'] >>>>>> columns
+
+
+newdf.loc[:] or newdf.loc[::] :  to get all the rows and all the columns
+
+
+newdf.loc[[1,2],:] or newdf.loc[[1,2],::]   :  to get [1,2] rows and all the columns
+
+
+newdf.loc[:,['C','D']] or newdf.loc[::,['C','D']]   :  to get [1,2] rows and all the columns
+
+
+newdf.loc[(newdf['C'] < 0.3)] :  to get the rows where value of column 'C' < 0.3
+
+
+newdf.loc[(newdf['C'] < 0.3) & (newdf['D'] > 0.4)]  :  to implement "and"
+
+newdf.loc[(newdf['C'] < 0.3) | (newdf['D'] > 0.4)]  :  to implement "or"
+
+newdf.loc[(newdf['C'] == 0.3) & (newdf['D'] != 0.4)]  :  to implement "==" and "!="
+
+
+newdf.iloc[0,0] : if index needs to be used 
+
+newdf.loc[0,['A','B']] : if column name needs to be used
+
+
+newdf = newdf.drop(['A','B','C'],axis=1) : to drop a column (['A','B','C'] >>>>>> columns)
+
+or
+
+newdf.drop(['A','B','C'],axis=1,inplace=True) : to drop a column (['A','B','C'] >>>>>> columns)
+
+
+
+To drop all the records :
+
+dt = dt.iloc[0:0]
+
+
+newdf.reset_index(inplace=True) : to reset the index
+
+But it adds another column with the name "index" having the state of the previous indexes which is 
+sometimes not required.
+
+newdf.drop('index',axis=1,inplace=True)
+
+
+Instead, use "drop" parameter while resetting
+
+newdf.reset_index(drop=True,inplace=True)
+
+
+
+newdf.loc[0,'B'] = None
+
+newdf['B'].isnull()  :  returns "True" if the value was found "None" else "False"
+
+newdf['B'].notnull()  :  returns "True" if the value was not "None" i.e. a valid value 
+			                else "False"
+
+newdf.dtypes : to get the datatypes of all the columns
+
+
+newdf.loc[:,'D'] = None   : to set the column values as "None" for all the rows if dtype is "object"
+
+newdf.loc[0,'D'] = None   : to set the column value as "NaN" if dtype is "int/float"
+
+newdf.loc[0,'D'] = None   : to set the column value as "None" if dtype is "object"
+
+
+To remove missing values :
+
+
+axis : 1/0 (1 : column,
+	    0 : row (by default) )
+
+
+how : any/all (any : if any value is None (by default),     # for that row/column 
+	       all : if all the values are None)            # for that row/column
+
+
+newdf.dropna(how='all') or newdf.dropna(how='any')                      # for row
+
+newdf.dropna(how='all',axis=0) or newdf.dropna(how='any',axis=0)        # for row
+
+
+newdf.dropna(how='all',axis=1) or newdf.dropna(how='any',axis=1)        # for column
+
+
+newdf.shape : to check the number of rows and columns
+
+
+newdf.info() : to get the information of DataFrame
+
+
+newdf['name'].value_counts() :  to count the occurrences of the values (excluding None)
+
+newdf['name'].value_counts(dropna=False) :  to count the occurrences of the values (including None)
+
+
+
+to add a record in a DataFrame :
+
+dt = dt.append({
+    		'LDAPS' : 'roshaa',
+    		'accounts':100,
+    		'branch':'Dubai'
+	       },ignore_index=True)
+
+
+
+pip install xlrd
+
+dt = pd.read_excel('data.xlsx')  : to read an excel file. It reads first sheet by default.
+
+
+dt = pd.read_excel('data.xlsx',sheet_name='YPP')  : to read a particular sheet if sheet_name is str
+
+dt = pd.read_excel('data.xlsx',sheet_name=1)  : to read a particular sheet if sheet index needs to be
+						 used
+
+dt = pd.read_excel('data.xlsx',sheet_name='56')  : to read a particular sheet if sheet_name is "int" 
+						   in the form of "str"
+
+
+To write into excel file :
+
+dt.iloc[0,0] = 'haris'
+
+pip install openpyxl
+
+dt.to_excel('data.xlsx',sheet_name='YPP')  : it deletes rest of the sheets and also adds an extra 
+					    column. It creates a sheet with the name 'YPP'
+
+
+dt.to_excel('data.xlsx',sheet_name='YPP',index=False)  : to prevent the addition of that extra column
+
+
+dt2.rename(columns={'LDAP':'LDAPS'},inplace=True) : to rename a column from 'LDAP' to 'LDAPS'
+
+
+
+If we need to write to the multiple sheets with multiple DataFrames :
+
+
+>>>>>>>>>>>>>> Method 1 : <<<<<<<<<<<<<<<<<<<<<<
+
+
+with pd.ExcelWriter('output.xlsx') as writer:  
+    dt.to_excel(writer, sheet_name='first',index=False)
+    dt2.to_excel(writer, sheet_name='second',index=False)
+
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+>>>>>>>>>>>>>> Method 2 : <<<<<<<<<<<<<<<<<<<<<<
+
+
+writer =  pd.ExcelWriter('output.xlsx')
+dt.to_excel(writer, sheet_name='first',index=False)
+dt2.to_excel(writer, sheet_name='second',index=False)
+writer.save()    # it needs to be called just once when changes need to be saved into the disk
+		 # if we missed to update a sheet before calling save(), that sheet will be lost
+
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+If the sheet is already present, if the records present in the DataFrame are lesser than that of the
+sheet, that many records in the sheet will be overridden by the records of the DataFrame. The sheet 
+will still have those records which were not overridden.
+
+If the sheet is not present, a new sheet will be created.
+
+
+However,If we need to append the contents in an existing sheet :
+
+
+dtfile = pd.read_excel('output.xlsx',sheet_name='second')
+dtfile = dtfile.append(dt,ignore_index=True)
+dtfile.to_excel(writer, sheet_name='second',index=False)
+writer.save()    
+
+
+
+To remove duplicate records :
+
+
+df.drop_duplicates(subset=['name'],keep='first')   # keep the first duplicate record
+
+df.drop_duplicates(subset=['name'],keep='last')   # keep the last duplicate record
+
+df.drop_duplicates(subset=['name'],keep=False)   # don't keep any duplicate record
+
+
+
+
+dt22 = dt22.append({
+    'LDAPS':'danish',
+    'accounts':64,
+    'branch':'gurugram'
+},ignore_index=True)
+
+

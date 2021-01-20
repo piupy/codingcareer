@@ -1,0 +1,107 @@
+Private Sub Command1_Click()
+If con.State = adStateOpen Then
+rst.AddNew
+Else: MsgBox "connection is not opened yet"
+End If
+End Sub
+
+Private Sub Command10_Click()
+If con.State = adStateOpen Then
+If Len(Trim(MaskEdBox1.Text)) > 0 And Len(Trim(MaskEdBox2.Text)) > 0 And Len(Trim(MaskEdBox3.Text)) > 0 And Len(Trim(MaskEdBox4.Text)) > 0 Then
+MsgBox "Now the Record is ready to be added"
+Else: MsgBox "record can't be added right now"
+End If
+Else: MsgBox "connection is not opened yet"
+End If
+End Sub
+
+Private Sub Command2_Click()
+
+If con.State = adStateOpen Then
+If Len(Trim(MaskEdBox1.Text)) > 0 And Len(Trim(MaskEdBox2.Text)) > 0 And Len(Trim(MaskEdBox3.Text)) > 0 And Len(Trim(MaskEdBox4.Text)) > 0 Then
+rst.Update
+MsgBox "Record Saved"
+Else: MsgBox "Your Record was not saved successfully"
+End If
+Else: MsgBox "connection is not opened yet"
+End If
+End Sub
+
+Private Sub Command3_Click()
+If con.State = adStateOpen Then
+rst.Delete
+MsgBox "Record Deleted"
+rst.MovePrevious
+Else: MsgBox "connection is not opened yet"
+End If
+End Sub
+
+Private Sub Command4_Click()
+If con.State = adStateOpen Then
+rst.MoveFirst
+Else: MsgBox "connection is not opened yet"
+End If
+End Sub
+
+Private Sub Command5_Click()
+If con.State = adStateOpen Then
+If rst.BOF = True Then
+MsgBox "Beginning of File"
+rst.MoveFirst
+Else: rst.MovePrevious
+End If
+Else: MsgBox "connection is not opened yet"
+End If
+
+End Sub
+
+Private Sub Command6_Click()
+If con.State = adStateOpen Then
+If rst.EOF = True Then
+MsgBox "End of FIle"
+rst.MoveLast
+Else: rst.MoveNext
+End If
+Else: MsgBox "connection is not opened yet"
+End If
+End Sub
+
+Private Sub Command7_Click()
+If con.State = adStateOpen Then
+rst.MoveLast
+Else: MsgBox "connection is not opened yet"
+End If
+End Sub
+
+Private Sub Command8_Click()
+If con.State = adStateOpen Then
+MsgBox "Already Opened "
+Else: MsgBox "This will open the Connection"
+con.Open "provider=microsoft.jet.oledb.4.0;data source=C:\Users\waheguru\Desktop\practice\adodb.mdb"
+If con.State = adStateOpen Then
+MsgBox "The Connection is now open."
+rst.Open "select * from ado", con, adOpenDynamic, adLockOptimistic, adCmdText
+Set MaskEdBox1.DataSource = rst
+MaskEdBox1.DataField = "eid"
+Set MaskEdBox2.DataSource = rst
+MaskEdBox2.DataField = "ename"
+Set MaskEdBox3.DataSource = rst
+MaskEdBox3.DataField = "edesig"
+Set MaskEdBox4.DataSource = rst
+MaskEdBox4.DataField = "esal"
+Else: MsgBox "The Connection is Closed."
+End If
+End If
+End Sub
+
+Private Sub Command9_Click()
+If con.State = adStateClosed Then
+MsgBox "connection already closed"
+Else: con.Close
+MsgBox "connection closed now"
+End If
+End Sub
+
+Private Sub Form_Load()
+
+End Sub

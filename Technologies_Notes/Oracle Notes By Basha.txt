@@ -1,0 +1,4279 @@
+
+-- Oracle version 7 is the first RDBMS.
+
+
+
+-- In SQL, we use statements instead of a procedural code. There is no step by step process and a single query can have different
+outputs in case a particular thing(column,table) is missing. Outputs for these kind of situations are already defined. Hence, it is
+ known as a Non-procedural language.
+
+
+
+
+-- DDL commands directly interact with database and hence can't be rollbacked but in case of DML commands, initially data will be
+ stored in buffer and is stored in database permanently only when a commit is done. In case of a rollback, data from the buffer will
+ be rollbacked. Hence, DDL commands are faster while DML commands are slower in performance.
+
+
+
+-- Whenever a DML command is executed, those many rows are locked for the time.
+
+
+
+-- All the columns from a table can't be table and the table must have atleast one column.
+
+-- The table name as well as the column name can be same.
+
+
+
+-- creating a table from an existing table
+
+
+
+create table sample as select * from emp;
+
+
+
+create table sample as select id,name,salary from 
+emp;
+
+
+
+
+
+
+-- creating a table from an existing table but only the table structure and not data
+
+
+
+
+create table sample as select * from emp where
+ 1 = 2;  -- Any false condition
+
+
+
+
+-- renaming a table 
+
+
+
+alter table emp
+
+rename to emp2;
+
+
+
+-- or
+
+
+
+rename emp to emp2;
+
+
+
+
+-- renaming a column
+
+
+
+alter table emp
+
+rename column id to id2;
+
+
+
+
+-- renaming of multiple columns is not possible
+
+
+
+
+-- dropping a column
+
+
+
+alter table emp
+
+drop(col1,col2,col3);
+
+
+
+
+
+
+-- Dropping a table
+
+
+
+drop table emp;
+
+
+
+
+
+-- Checking Recycle Bin
+
+
+
+select *
+ from recyclebin;
+
+
+
+
+
+-- flashback (Recovering From Recycle Bin)
+
+
+
+flashback table emp to before drop;
+
+
+
+
+
+-- flashback as well as rename
+
+
+
+flashback table emp to before drop rename to emp1;
+
+
+
+
+
+-- purge (Emptying From Recycle Bin)
+
+
+
+purge table emp;
+
+
+
+
+
+-- purge (Deleting Permanently)
+
+
+
+drop table emp purge;
+
+
+
+
+
+-- clearing the recyclebin in a single shot
+
+purge recyclebin;
+
+-- adding comment on a table
+
+
+
+comment on table emp is 'List of Employees';
+
+
+
+
+
+
+-- adding comment on a column
+
+
+
+comment on column emp.id is 'Employee Id';
+
+
+
+
+
+-- checking comments on tables 
+
+
+
+select * 
+from user_tab_comments;  -- Data dictionary view
+
+
+
+
+
+-- checking comments on columns
+
+ 
+
+select * 
+from user_col_comments;  -- Data dictionary view
+
+
+
+
+-- adding columns
+
+
+
+alter table emp
+
+add(dob date,address varchar2(100));
+
+
+
+
+
+-- modifying columns
+
+
+
+alter table emp
+
+modify(dob varchar2(10),address char(100));
+
+
+
+
+
+-- setting a column as unused
+
+
+
+
+alter table emp
+
+set unused(addr,salary);
+
+
+
+
+
+
+-- dropping unused columns
+
+
+
+alter table emp
+
+drop unused columns;
+
+
+
+
+
+-- even though the column is hidden, we can add a column with a same name because there is no option to unhide. hence, an unused 
+column will be treated as a dropped column
+
+
+
+
+-- enabling a constraint
+
+
+
+
+alter table emp
+
+enable constraint uq_fname;
+
+
+
+
+
+-- disabling a constraint
+
+
+
+
+alter table emp
+
+disable constraint uq_fname;
+
+
+
+
+-- Getting all the users
+
+
+
+select *
+ from all_users;
+
+
+
+-- getting the current user
+
+
+
+select user
+ from dual;
+
+
+
+-- getting the current date
+
+
+
+select sysdate
+ from dual;
+
+-- getting the current date
+
+ and time (timestamp)
+
+select systimestamp
+ from dual;
+
+
+
+
+
+-- if we need to provide the values in our own order, then column list is required otherwise its optional.
+
+
+
+
+-- reading from console
+
+
+
+insert into emp values(&id,'&name',&salary,&deptid);
+
+
+
+
+
+-- any name can be used instead of the original column names
+
+
+
+insert into emp values(&c1,'&c2',&c3,&c4);
+
+
+
+
+
+
+-- inserting all the records from another table
+
+
+
+insert into emp select * from empcopy
+
+
+
+
+
+
+-- inserting selected columns from another table (all the records)
+
+
+
+insert into emp(id,name) select id,name from empcopy
+
+
+
+
+
+
+-- inserting selected columns from another table (specific record)
+
+
+
+insert into emp(id,name) select id,name from empcopy where id = 6
+
+
+
+
+-- inserting data of multiple tables into a single table
+
+
+
+
+
+create table empdept 
+( 
+id int primary key, 
+empname varchar2(20),
+deptname varchar2(20) 
+);
+
+
+
+
+
+insert into empdept
+ select e.id,e.name "EmpName",d.name "DeptName"
+from emp e,dept d
+where e.deptid = d.id;
+
+
+
+
+
+-- adding column values of type number only
+
+
+
+select sal + comm
+ from emp;
+
+
+
+
+
+
+
+-- Difference b/w delete and truncate
+
+
+	
+
+Delete						        |		Truncate
+
+
+1. Its a DML command.					| 1. Its a DDL command.
+
+2. Can be rollbacked.					| 2. Can't be rollbacked.
+
+3. Single row can be deleted.				| 3. Single row can't be truncated.
+
+4. Multiple rows can be deleted. 			| 4. Multiple rows can't be truncated.
+
+5. where cluase can be used.				| 5. where clause can't be used.
+
+6. slow in performance.					| 6. fast in performance.
+
+
+
+
+
+
+-- Merge command
+
+It is used to perform insert and update in a single statement. In this case, we can have multiple source tables but the target table
+will be just one into which the data will be inserted or updated. Condition matching column(empno in this case) can't be updated.
+
+
+ merge into target t
+ using (select * from source) s        -- directly a table name can also be used and parenthesis is mandatory
+ on (t.empno = s.empno)                -- parenthesis is mandatory
+ when matched then
+ update set t.ename = s.ename
+ when not matched then
+ insert (empno,ename) values(s.empno,s.ename)
+
+
+-- DCL commands
+
+
+
+
+-- granting the privileges to a user
+
+
+
+
+grant select on emp to user2;
+
+
+
+-- now user2 can select the emp table data as
+
+
+
+select * 
+from user1.emp;  -- by specifying the schema
+
+
+
+
+
+
+-- granting all the privileges of the current user i.e. user1 and not oracle
+
+
+
+
+grant all on emp to user2;
+
+
+
+
+
+-- granting multiple privileges
+
+
+
+grant select,insert on emp to user2;
+
+
+
+
+
+
+
+-- granting multiple privileges to multiple users
+
+
+
+grant select,insert on emp to user2,user3;
+
+
+
+
+
+-- but in every case, object i.e. table can only be one
+
+
+
+
+
+
+
+
+-- creating a user
+
+Create user <<username>> identified by <<password>>;
+
+-- connecting to the database
+
+connect <<username>>/<<password>>;
+
+or
+
+conn <<username>>/<<password>>;
+
+-- disconnecting to the database
+
+disconnect;
+
+or
+
+disconn;
+
+-- dropping a user
+
+drop user <<username>> cascade;
+
+-- granting the DBA role (all the privileges)
+
+grant dba to <<username>>;
+
+But while granting the "dba" role to a user, we have to extremely cautious as that user would become the dba and hence would achieve
+the right to revoke the "dba" privilege from the user who had given him that privilege. Eg.
+
+system  :  dba user
+
+show user;  --- user is system
+
+create user u1 identified by p1;   -- user created
+
+conn u1/p1;   -- user connected
+
+show user;  -- user is u1
+
+revoke dba from system;   -- revoking the dba rights from system only
+
+conn system/sql;      ---- error because now user "system" lacks the create session privilege
+
+
+--- resigning from the role of dba
+
+A user having the dba role can resign this role by specifying its own name as  :
+
+show user;   --- user is u1;
+
+revoke dba from u1;    --- user u1 resigns 
+
+But still the user u1 would not lose the dba privilege instantly. It will lose those privileges as soon as the session expires i.e.
+if either it logs out or another user logs in. Eg.
+
+show user;  -- user is u1
+
+revoke dba from u1;  -- u1 resigns
+
+create table t(t number);   -- table created
+
+conn u2/p2;
+
+conn u1/p1;   ---- error because u1 lacks create session privilege now
+
+-- granting login privilege to the user
+
+grant create session to <<username>>;
+
+or
+
+grant connect to <<username>>;
+
+-- DCL commands
+
+-- user1 is providing privileges
+
+Grant select on emp to user2;
+
+-- now user2 can select data using schema name as
+
+Select *
+From user1.emp;
+
+-- granting all the privileges what the current user(user1) has on an object(emp) to another
+user(user2). This “all” doesn’t mean all the privileges of oracle.
+
+Grant all on emp to user2;
+
+-- granting multiple privileges to multiple users
+
+Grant select, insert on emp to user2, user3;
+
+-- we can’t grant privileges on more than one object at a time
+
+Eg. grant select on emp,dept to user2;
+
+--- granting the privileges to all the users
+
+grant all on emp to public;
+
+-- sharing the privileges at different levels
+
+“With grant option” is used to allow a user to give privileges further to a user.
+If a user has received the privileges from the granter “with grant option”, then only he can give
+the privileges further to another user otherwise not. This is because of the fact that the
+privileges didn’t belong to the user and he just received it from the main user.
+Eg.
+
+user1> grant select on emp to user2 with grant option;
+
+user2> select * from user1.emp; -- schema name must be used everytime
+
+user2> grant select on user1.emp to user3;
+
+user3> select * from user1.emp ; -- user3 would have to use the schema name which is the
+name of the original schema(user1) and not the user who has given the privileges to it(user2).
+
+user3> grant select on emp to user4 ; -- error because user3 has not the grant option so he
+can’t provide the privileges to any other user
+
+-- revoking privileges
+
+user1> Revoke select on emp from user2;
+
+-- revoking privileges from an indirect receiver
+
+user1> Revoke select on emp from user2; -- it will revoke the select privilege from all the users
+who are below the user2(including itself) in the privilege hierarchy.
+But user1 can’t revoke privileges directly from a user to whom(user3) he hadn’t given the
+privileges. So, either he will ask the provider to revoke the privilege or he will directly revoke the
+privilege from the user who is just below it in the privilege hierarchy.
+
+user1> revoke select on emp from user3; -- error
+
+-- Roles
+
+Role is a set of privileges. Instead of storing the information that which privilege is there for
+whom, we create roles and then assign them to the users. This way, maintenance of the users
+become possible. It can be given as
+
+Create role <<role_name>>; --- without password
+
+Or
+
+Create role <<role_name>> not identified; --- without password
+
+Or
+
+Create role <<role_name>> identified by <<password>> ; --- with password
+
+-- granting privileges to the role
+
+Grant select,insert,update on <<table_name>> to <<role_name>> ;
+
+-- granting role to the users
+
+Grant <<role_name>> to user1,user2 ;
+
+--- instead of granting privilege to a user, we can grant that privilege to a role and this way all
+the users who have all that role, will get the privileges.
+Similarly, the privileges can be revoked as well and hence there is no need to revoke a special
+privilege once again.
+So as to add a role to a user, simply revoke the previous role and grant the new one and hence,
+maintenance of users at row level becomes very easy.
+
+--- setting password to a role
+
+Alter role <<role_name>> identified by <<password>> ;
+
+-- removing password from a role
+
+Alter role <<role_name>> not identified ;
+
+-- a role can be granted to another role
+
+Grant <<role1>> to <<role2>> ;
+
+-- setting the role to the current user (enabling a role because by default a role is disabled and it
+will not work just by being granted to a user)
+
+Set role <<role1>> ;
+
+-- setting all the roles to the current user
+
+Set role all ;
+
+-- setting all the roles to the current user except a particular role
+
+Set role all except <<role2>> ;
+
+-- removing all the roles
+
+Set role none ;
+
+-- setting a role with password
+
+Set role <<role1>> identified by <<password>> ;
+
+-- TCL commands (commit,rollback,savepoint,set transaction)
+
+-- commit
+
+A transaction needs to be started by any DML command(insert,update,delete,merge) but not
+select and needs to be ended up by either commit or rollback.
+The modified data will be visible to the current user only. Rest all will see only the previous data
+but as soon as the current user commits the data, it will be visible to the rest users as well.
+There is an implicit commit just before and after a DDL and DCL command.
+
+-- rollback
+
+It is the only SQL command whose short form is possible i.e. ROLL.
+In case of abnormal termination of the screen, an implicit rollback is done by oracle.
+
+-- savepoint
+
+It is a temporary saving point in a transaction. Two savepoints can have same names but the
+previous one will be overridden. Savepoints are stored in buffer. Any number of savepoints can
+be created in a transaction.
+Rollback till a particular savepoint is possible as
+
+Rollback to savepoint <<savepoint_name>> ;
+
+If simple rollback is done, it will be rollbacked to the last commit. And all the savepoints will also
+be removed.
+
+-- set transaction
+
+It is used to change the mode of the transaction. By default, mode of any transaction is READ
+WRITE so we can perform any DML statement including select. But in case, we would set the
+transaction as READ ONLY, then only select will be allowed and as soon as the transaction
+gets completed, then again the mode is set to READ WRITE.
+SET TRANSACTION must be the first statement of the transaction.
+
+-- isolation levels
+
+Set transaction isolation level READ COMMITTED (default) ;
+This means that the users will only see the committed data and if they will try to read the
+uncommitted data, they won’t be able to do so because locks would be applied on the data
+being used.
+
+Set transaction isolation level SERIALIZABLE ;
+
+This means that the users would see the previous data only even if the data is modified and
+committed (data before starting the transaction).
+
+-- datatypes
+
+Char : default size is 1 byte and specifying the size is optional.
+
+Varchar2 : it is the original type of oracle to store strings and it treats a NULL value and an
+empty string as same.
+
+Varchar : It is the new version of varchar2 and it treats a NULL value and an empty string as
+different things. Max size is 4000
+
+Both of the above datatypes store the string values in variable format meaning extra memory is
+released.
+
+-- in case of char datatype, padding of white spaces is done which occupies all the space of the
+variable. So, in case RTRIM function is applied, the padding is removed.
+
+LENGTH(RTRIM(NAME)) : it will give the length after trimming the spaces in the right.
+
+We can actually check those spaces using the TRANSLATE function as
+
+TRANSLATE(name,' ','$')
+
+It will display the $ symbol instead of those spaces.
+
+char(10) : character of maximum size 10 bytes. Max size is 2000.
+
+char(10 BYTE) : character of maximum size 10 bytes.
+
+char(10 CHAR) : character of type multi-byte(having maximum size of 4 bytes) of maximum
+size 10 character.
+
+-- NUMBER(PRECISION,SCALE) :
+
+Precision : total digits (default and maximum is 38)
+
+Scale : digits after decimal (-84 to 127)
+
+Just the precision is also allowed.
+Number allows . , + , - as well.
+
+NUMWIDTH : default is 10
+But can be set as :
+
+Set numwidth 50.
+
+DATE : default format is DD-MON-YY. Storage size is 7 bytes.
+Date range is 1-jan-4712 to 31-dec-1999
+
+Converting a string to date :
+to_date(‘01-jul-1994 11:23:34 AM’,’dd-mon-yyyy hh:mi:ss AM’)
+
+Only DEFAULT and NOT NULL constraints are allowed on LONG, LONG RAW.
+
+-- IDENTIFIERS
+
+Max length is 30 chars. Albhanumeric and _,$,# are allowed. First char must be an alphabet.
+By using ' ', any name can be used as an identifier. But the name becomes case sensitive.
+
+-- group by clause
+
+All the columns which are there in the select clause must be there in the group by clause but
+reverse is not true. Usually, we don’t place the columns in the select list which are not in the
+group by clause because we won’t be able to judge the result that the values belong to which
+column.
+
+Eg.
+
+select gender, sum(salary) -- gender is present in the select clause
+from emp -- as well as in group by clause
+group by gender
+
+select sum(salary) -- OK because no column is the select clause
+from emp
+group by gender
+
+select name,sum(salary) -- error because name is not there in the group by clause
+from emp
+group by gender
+
+-- having clause
+
+It is used to filter the groups as where clause can’t be used on the groups. where clause can
+neither be used with group functions and hence we need having clause.
+
+Subqueries are also allowed in having clause.
+
+-- functions
+
+Built-in functions :
+
+1. Upper -- returns a string in uppercase
+
+2. Lower -- returns a string in lowercase
+
+3. Initcap -- returns a string with each word’s first letter in uppercase. Infact every char after
+a special char will be capitalised. No matter whether we have provided the rest of the
+chars in uppercase, they will be converted into lowercase.
+
+4. Length -- returns the length of string
+
+5. Concat -- returns a concatenated string. But only two arguments can be passed at a
+time. || operator can also be used.
+
+6. Lpad -- returns a left padded string
+
+lpad('string',total_length,'padded_char')
+
+lpad('oracle',10,'$') : $$$$oracle
+
+7. Rpad -- returns a right padded string
+
+rpad('string',total_length,'padded_char')
+
+rpad('oracle',10,'$') : oracle$$$$
+
+Padding in both the sides :
+
+rpad(lpad('oracle',10,'$'),14,'$') : $$$$oracle$$$$
+
+8. Ltrim -- trims the chars in the string from the left. Even if duplicate chars are there in
+search list of chars, they will be treated as distinct and the string from the left will be
+checked in a loop manner until an absent char is found. And when it happens, the string
+is returned.
+
+Eg.
+
+ltrim('oorrclleeeseaaaarver','oooooorcccaccleeeeeeeesssr') -- ver
+
+ltrim('oorrclleeeseaaaarverz','oooovoorcccaccleeeeeeeesssr') -- z
+
+9. Rtrim -- exactly similar to Ltrim but trims the chars from the right.
+
+Eg. rtrim('xoorrclleeeseaaaarverz','oooovoorcccacclzeeeeeeeesssr') -- x
+
+10. Trim -- trims the chars from both the sides. By default, ' ' is considered as the trim
+argument.
+
+Eg. trim(' Oracle') -- Oracle is similar to trim(' ' from ' Oracle')
+
+Keyword "both" can be explicitly used with this function.
+
+Eg. trim(both ' ' from ' Oracle')
+
+While trimming from left as well as right is possible using “leading” and “trailing” keywords.
+
+Eg. trim(leading ‘ ‘ from ‘ Oracle’) -- left trim
+
+Eg. trim(trailing ‘ ‘ from ‘ Oracle ’) -- right trim
+
+Drawback of trim :
+
+Trim set can have only one character. So,
+
+trim(leading ‘ oo‘ from ‘ooooracle ’) -- error
+
+Instead, we can use nested trim as
+
+trim(‘r’ from trim(leading ‘ o‘ from ‘ooooracle ’))
+
+11. Translate -- replaces a character with another character in a string. Character by character
+replacement is done. Eg.
+
+translate(‘Oracle Server’,’oel’,’123’) :
+
+o will be replaced with 1, e with 2 and l with 3
+
+translate(‘Oracle Server’,’oel’,’12’) :
+o will be replaced with 1, e with 2 and l will be replaced with null meaning l will be trimmed
+
+12. Replace -- replaces a string with another string.
+
+replace(‘oracle server’,’er’,’123’)
+
+Character by character replacement will not be there
+
+13. Substr -- returns a part of string from a given string
+
+substr('oracle server',5,2) -- returns “le”
+
+5 --- start position
+
+2 -- length of characters to be fetched and not the ending index
+
+If start position is -ve, then it will count from the right side but still it will take characters towards
+right side.
+
+substr('oracle server',-5,3) -- returns “erv”
+
+substr('oracle server',100,3) -- returns null
+
+substr('oracle server',2) -- returns the complete string from the specified position i.e.
+
+“racle server”
+
+Even if zero is specified, it will be treated as the first char.
+
+substr('oracle server',0,2) --- “or”
+
+substr('oracle server',0) -- returns the complete string from the specified position i.e.
+
+“racle server”
+
+No. of characters must be always +ve and will be taken towards right side only
+
+14. Instr --- returns the position of string found in a particular string
+
+instr(string,search_string,start,occurrence_number)
+
+instr(‘oracle server’,’e’,1) -- 6
+
+instr(‘oracle server’,’e’,7) -- 9 ( first occurrence from 7th char )
+
+instr(‘oracle server’,’e’,1,2) -- 9 ( second occurrence from start )
+
+instr(‘oracle server’,’e’,1) -- 6
+
+instr(‘oracle server’,’e’,1) -- 6
+
+Occurrence can’t be zero or -ve.
+
+Zero can’t be the start position unlike substr function(which converts 0 to 1 and takes the chars).
+
+instr(‘oracle server’,’e’,-1) -- 12
+
+instr(‘oracle server’,’e’,-1,2) -- 9
+
+instr(‘oracle server’,’e’) -- 6
+
+instr(‘oracle server’,’e’) -- 6
+
+instr(‘oracle server’,’er’) -- 9
+
+instr(‘oracle server’,’er’,1) -- 9
+
+instr(‘oracle server’,’er’,-1) -- 12
+
+instr(‘oracle server’,’er’,-1,2) -- 9
+
+instr(‘oracle server’,’ere’) -- 0
+
+instr(‘oracle server’,’ere’,1) -- 0
+
+instr(‘oracle server’,’ere’,-1) -- 0
+
+Zero means string is not present in the given string.
+
+15. Reverse -- returns the string in reverse order
+
+reverse('oracle server') --- revres elcaro
+
+16. Abs -- returns the positive result of a number
+
+abs(123) --- 123
+
+abs(-123) --- 123
+
+abs(0) --- 0
+
+17. Ceil -- returns the next integer
+
+ceil(123.45) --- 124
+
+ceil(-123.16) --- 123
+
+ceil(10) --- 10
+
+18. Floor -- returns the previous integer
+
+floor(123.56) -- 123
+
+floor(-123.56) -- 124
+
+floor(123) -- 123
+
+19. Power -- returns the power of a number
+
+power(10,2) --- 100
+
+20. Sign -- returns the sign of a number in terms of 1,-1 or 0.
+
+1 -- for a +ve no.
+
+-1 -- for a -ve no.
+
+0 -- for zero
+
+21. Mod -- returns the modulus value
+
+mod(23,3) -- 2
+
+mod(10,23) -- 10
+
+22. Sqrt -- returns the square root of a number
+
+sqrt(25) -- 5
+
+23. Stddev -- returns the standard deviation
+
+24. Variance -- returns the variance
+
+25. Max -- returns the maximum
+
+26. Min -- returns the minimum
+
+27. Count -- returns the count
+
+28. Avg -- returns the average
+
+29. Sum -- returns the sum
+
+30. Distinct -- returns the distinct values
+
+31. Unique -- returns the unique values. It is exactly similar to distinct.
+
+32. Trunc -- returns the truncated number
+
+select trunc(123.45) -- 123
+from dual
+
+select trunc(123.456,2) -- 123.45
+from dual
+
+select trunc(123.45678,12) -- 123.45678
+from dual
+
+select trunc(123.45678,0) --- 123
+from dual
+
+select trunc(123.45678,-1) -- 120
+from dual
+
+select trunc(123.45678,-2) --- 100
+from dual
+
+select trunc(123.45678,-3) -- 0
+from dual
+
+select trunc(123.45678,-4) --- 0
+from dual
+
+33. Round -- returns a rounded-off value
+
+select round(1234.678),trunc(1234.678) -- 1235,1234
+from dual
+
+select round(1234.678,0),trunc(1234.678,0) -- 1235,1234
+from dual
+
+select round(1234.678,4),trunc(1234.678,4) -- 1234.678,1234.678
+from dual
+
+select round(1234.678,3),trunc(1234.678,3) -- 1234.678,1234.678
+from dual
+
+select round(1234.678,2),trunc(1234.678,2) -- 1234.68,1234.67
+from dual
+
+select round(1234.678,1),trunc(1234.678,1) -- 1234.7,1234.6
+from dual
+
+select round(1234.678,0),trunc(1234.678,0) -- 1235,1234
+from dual
+
+select round(1234.678,-1),trunc(1234.678,-1) -- 1230,1230
+from dual
+
+select round(1238.678,-1),trunc(1238.678,-1) -- 1240,1230
+from dual
+
+select round(1238.678,-2),trunc(1238.678,-2) -- 1200,1200
+from dual
+
+select round(1238.678,-3),trunc(1238.678,-3) -- 1000,1000
+from dual
+
+select round(1738.678,-3),trunc(1738.678,-3) -- 2000,1000
+from dual
+
+select round(1238.678,-3),trunc(1238.678,-3) -- 1000,1000
+from dual
+
+select round(1738.678,-4),trunc(1738.678,-4) -- 0,0
+from dual
+
+select round(8738.678,-4),trunc(8738.678,-4) -- 10000,0
+from dual
+
+Date functions :
+
+1. Sysdate --- returns the current date of the server system
+
+select to_char(sysdate,'dd/mon/yyyy hh:mi:ss am') -- 19/apr/2018 06:28:13 pm
+from dual
+
+2. Current_date -- returns the current date of the client system
+
+3. Add_months -- returns the date after/before a certain number of months
+
+add_months(‘19/apr/2018’,2) --- 19/jun/2018
+
+add_months(‘19/apr/2018’,-2) ---- 19/feb/2018
+
+4. Last_day -- returns the last day of the month
+
+last_day(‘19/feb/2018’) ---- 28/feb/2018
+
+5. Next_day -- returns the next day of week provided
+
+next_day(‘19/apr/2018’,’sun’) ---- 22/apr/2018 (19/apr/2018 --- thursday)
+
+next_day(‘19/apr/2018’,1) ---- 22/apr/2018 (19/apr/2018 --- thursday)
+
+next_day(‘19/apr/2018’,’sunday’) ---- 22/apr/2018 (19/apr/2018 --- thursday)
+
+1 : Sunday
+2 : Monday
+3 : Tuesday
+4. Wednesday
+5. Thursday
+6. Friday
+7. Saturday
+
+6. New_time -- returns the date and time of a particular zone
+
+select to_char(new_time(sysdate,'pst','ast'),'dd/mon/yyyy hh:mi:ss am')
+from dual -- 19/apr/2018 10:34:10 pm
+
+7. Months_between(date1,date2) -- returns the month difference between two dates
+
+Date1 - Date2 is done
+
+select months_between('11/19/2018',sysdate+60) --- 5
+from dual -- sysdate : 04/19/2018
+
+8. Trunc -- returns a truncated date. Truncation can be done on various things like year, month,
+quarter, week.
+
+Sysdate --- 19/apr/2018
+
+select trunc(sysdate,'yyyy') --- 01/jan/2018
+from dual
+
+select trunc(sysdate,'mm') --- 01/apr/2018
+from dual
+
+DD -- truncating the day
+
+select to_char(trunc(sysdate,'dd'),'dd/mon/yyyy hh:mi:ss am')
+from dual ---- 19/apr/2018 12:00:00 am
+
+W --- week of the month(Sunday in this case)
+
+select trunc(sysdate,'w') --- 15/apr/2018
+from dual
+
+WW --- week of the year (Monday in this case)
+
+select trunc(sysdate,’ww') --- 16/apr/2018
+from dual
+
+Q -- quarter
+
+select trunc(sysdate,'q') ---- 01/apr/2018
+from dual
+
+HH --- truncating hours (minutes will be removed)
+
+select to_char(trunc(sysdate,'hh'),'dd/mon/yyyy hh:mi:ss am')
+from dual ----- 19/apr/2018 07:00:00 pm
+
+MI --- truncating minutes (seconds will be removed)
+
+select to_char(trunc(sysdate,'mi'),'dd/mon/yyyy hh:mi:ss am')
+from dual -------- 19/apr/2018 07:32:00 pm
+
+
+9. Round -- returns the rounded-off date. But the string needs to be converted into a date first before applying this function
+
+select round(to_date('25/jun/2018'),'yyyy')
+from dual                  ---   01/jan/2018
+
+select round(to_date('30/jun/2018'),'yyyy')
+from dual                  ---   01/jan/2018
+
+select round(to_date('01/jul/2018'),'yyyy')
+from dual                  ---   01/jan/2019
+
+select round(to_date('10/jul/2018'),'mm')
+from dual                  ---   01/jul/2018
+
+select round(to_date('15/jul/2018'),'mm')
+from dual                  ---   01/jul/2018
+
+select round(to_date('16/jul/2018'),'mm')
+from dual                  ---   01/aug/2018
+
+-- sysdate  :   21/Apr/2018 10:02:10 pm
+
+select to_char(round(sysdate,'dd'),'dd/mon/yyyy hh:mi:ss am')
+from dual         --    22/Apr/2018 12:00:00 am
+
+select to_char(round(sysdate,'hh'),'dd/mon/yyyy hh:mi:ss am')
+from dual         --    22/Apr/2018 10:00:00 am
+
+select to_char(round(sysdate,'mi'),'dd/mon/yyyy hh:mi:ss am')
+from dual         --    22/Apr/2018 10:02:00 am
+
+-- fetching components of date
+
+select extract(day from '22/Apr/2018')
+from dual;                ---   22
+
+select extract(month from '22/Apr/2018')
+from dual;                ---   4
+
+select extract(year from '22/Apr/2018')
+from dual;                ---   2018
+
+
+-- fetching components of date using to_char
+
+-- sysdate  :   21/Apr/2018 10:02:10 pm
+
+select to_char(sysdate,'yyyy')
+from dual    --  2018
+
+select to_char(sysdate,'mm')
+from dual    --  04
+
+select to_char(sysdate,'dd')
+from dual    --  21
+
+select to_char(sysdate,'ddspth')
+from dual    --  Twenty First
+
+select to_char(sysdate,'year')
+from dual    --  Twenty Eighteen
+
+select to_char(sysdate,'yyyysp')
+from dual    --  Two Thousand Eighteen
+
+select to_char(sysdate,'month')
+from dual    --  April
+
+select to_char(sysdate,'day')
+from dual    --  Saturday
+
+-- setting number format
+
+set numformat 99,999
+
+But in this case, number greater than 99,999 will not be shown. So, always set the number in the number format with the max limit
+
+set numformat 99,99,99,99,999   --  something like this
+
+select 123456789
+from dual      ---    12,34,56,789
+
+set numformat 999,999,999   --  something like this
+
+select 123456789
+from dual      ---    123,456,789
+
+-- Adding components of a date to a timestamp value
+
+select systimestamp
+from dual   ---  21-APR-18 10.43.59.544000000 PM +05:30
+
+select systimestamp + INTERVAL '10' MINUTE
+from dual   ---  21-APR-18 10.53.59.544000000 PM +05:30
+
+-- Adding 20 minutes to the current time
+
+select to_char(sysdate,'dd/mon/yyyy hh:mi:ss am') "Now",to_char(sysdate + interval '20' minute,'dd/mon/yyyy hh:mi:ss am') "Then"
+from dual  
+
+Now                             Then
+-----------------------         -----------------------
+21/apr/2018 10:47:35 pm         21/apr/2018 11:07:35 pm
+
+
+-- Adding some years and months to a date
+
+select sysdate "Now", sysdate + to_yminterval('01-04') "Then"
+from dual    --  adding 1 year and 4 months
+
+Now           Then
+---------     ---------
+21-APR-18     21-AUG-19
+
+-- to_char() and to_number() functions can be used to convert a string into a number and vice-versa
+
+-- getting the constraints 
+
+select *
+from all_constraints;   ---   gives the list of all constraints
+
+select *
+from user_constraints;   ---   gives the list of all constraints of the current user
+
+
+-- default (setting a default value to a column)
+
+Its function is to prevent the assignment of null values to a column. If a default value is asssigned to a column, it guarantees
+the fact that it will not take a null value unless specified explicitly. It can't be assigned a constraint name in any case.
+It can't be assigned at table level.
+
+create table t
+(
+id int,
+name varchar2(10) default 'name here'
+);
+
+or
+
+alter table t
+add(sal float default 10000);
+
+-- removing a default constraint 
+
+alter table t
+modify(sal float default null);
+
+-- assigning a default constraint again
+
+alter table t
+modify(sal float default 20000);
+
+
+-- not null (not allowing null values)
+
+Its nature is exactly similar to default constraint with a small change that it can be assigned a constraint name. It too can't be 
+assigned at table level.
+
+create table t
+(
+id int,
+name varchar2(10) constraint nn_name not null
+);
+
+or
+
+alter table t
+add(sal float constraint nn_name not null);
+
+-- removing a not null constraint 
+
+alter table t
+modify(sal float null);
+
+-- assigning a not null constraint again
+
+alter table t
+modify(sal float not null);
+
+
+-- check constraint
+
+It can be defined both at column level as well as table level. 
+
+create table t
+(
+id int check(id = 10),                  --- this means the id will be either 10 or null
+name varchar(20),
+deptid int check(deptid in(10,20,30))
+);
+
+
+create table t
+(
+id int check(id = 10),                  --- this means the id will be 10 only
+name varchar(20),
+deptid int check(deptid in(10,20,30))
+);
+
+
+create table t
+(
+id int,
+name varchar(20),                           
+deptid int check(id in(100,200,300))       ---- error because check constraint can't reference other columns
+);
+
+
+create table t
+(
+id int constraint ck_id check(id <= 100)   --- at column level
+name varchar(20)                   
+);
+
+
+create table t
+(
+id int,
+name varchar(20),                           
+constraint ck_id check(id <= 100)   --- at table level
+);
+
+
+-- null is not equal to anything. So, nothing can be compared with null and hence = can't be used with null. So, "Is" operator is 
+used to do comparison with nulls.
+Even null is not equal to a null. Hence, each null is different from another null and hence every null value is unique.
+
+
+-- unique constraint
+
+Unique constraint allows any number of null values because every null is unique. It can be defined as :
+
+create table t
+(
+id int unique,             ---   column level
+name varchar2(10)
+);
+
+or 
+
+create table t
+(
+id int,
+name varchar2(10),
+constraint uq_id unique(id)           --- table level
+);
+
+or
+
+create table t
+(
+id int,
+name varchar2(10),
+unique(id)           --- without giving the constraint name 
+);
+
+
+Unique non-clustered index is created on primary key.
+
+-- primary key
+
+create table t
+(
+id int primary key,         --- column level
+name varchar(10)
+);
+
+or
+
+create table t
+(
+id int,         
+name varchar(10),
+constraint pk_id primary key(id)           --- table level
+);
+
+or
+
+create table t
+(
+id int,         
+name varchar(10),
+primary key(id)           --- table level
+);
+
+
+-- only one primary key is allowed per table. Unique clustered index is created on primary key.
+
+
+-- composite key is allowed only on unique,primary and foreign keys.
+
+
+-- foreign key
+
+It allows any number of null values.
+
+create table master
+(
+id int primary key,
+name varchar2(10)
+);
+
+
+
+create table detail
+(
+id int primary key,
+name varchar2(10),
+mid int constraint fk_mid references master(id)         -- keyword foreign key is not used at column level
+);
+
+or
+
+create table detail
+(
+id int primary key,
+name varchar2(10),
+mid int,
+constraint fk_mid foreign key(mid) references master(id)         -- keyword foreign key is used at table level
+);
+
+-- the column beign referenced can be either unique or primary key in the master table.
+
+
+-- a table can have maximum of 1000 columns.
+
+-- composite key can have maximum of 32 columns.
+
+-- on delete or update from the master table, the corresponding action in the detail table can be decided as
+
+
+create table master
+(
+id int primary key,
+name varchar2(10)
+);
+
+
+create table detail
+(
+id int primary key,
+name varchar2(10),
+mid int constraint fk_mid references master(id) on delete cascade         -- records from the master table can be deleted now
+);									  -- detail table's records will also be deleted
+
+
+create table detail
+(
+id int primary key,
+name varchar2(10),
+mid int constraint fk_mid references master(id) on delete set null         -- records from the master table can be deleted now
+);									  -- detail table's records will be set to null
+
+
+-- by default no action will be taken and the records in the detail table won't be affected because records from the master table
+can't be deleted unless foreign key relationship will be there.
+
+
+-- raw datatype
+
+It can store binary as well as hexadecimal values. Each char is equal to half byte in a raw type variable.
+
+create table t
+(
+id int,
+content raw(20)
+);
+
+
+-- BFILE,BLOB, CLOB and NCLOB also exists to store data.
+
+-- timestamp data type is also available to store date as well as time along with the time zone.
+
+
+!= , <> , ^= can be used as a not equal to operator.
+
+% -- It searches for any number of characters.
+
+_ -- It searches for only one character.
+
+/ --- gives quotient
+
+mod( ) -- gives remainder
+
+Show numwidth -- gives the numwidth
+
+Set numwidth 10; --- setting the numwidth
+
+< all (value1,value2) -- checks for a row where value is less than all the specified values
+
+< any (value1,value2) -- checks for a row where value is less than any of the specified values
+
+= any (value1,value2) -- checks for a row where value is equal to any of the specified values.
+
+Similar to IN operator
+
+<> all (value1,value2) -- checks for a row where value is not equal to any of the specified
+values. Similar to IN operator
+
+Exists operator --- if the inner query returns a result, then outer query is executed otherwise
+not.
+
+select *
+from empcopy
+where exists
+(
+select 1
+from empcopy
+where salary = 30000
+)
+
+---- with a condition
+
+select *
+from empcopy
+where exists
+(
+select 1
+from empcopy
+where salary = 300000
+)
+and id <= 3
+
+This means that if the inner query returns anything, then execute the following query :
+
+select *
+from empcopy
+where id <= 3;
+
+Not Exists operator --- if the inner query doesn’t return a result, then outer query is executed
+otherwise not. It is exactly opposite to Exists.
+
+Not operator -- it is used to negate a statement.
+
+-- set operators
+
+Union -- returns the combined records with distinct values
+
+Union All -- returns the combined records with duplicate values
+
+Intersect -- returns the common records with distinct values
+
+Minus -- returns the records from set1 - set2 with distinct values
+
+-- column names from the first result set are shown. So, instead of null, use aliases.
+
+-- data will be sorted by the first column of the first result set.
+
+-- creating views
+
+Create or replace view v as
+Select *
+From emp;
+
+-- to get the text of views
+
+Select *
+From user_views;
+
+-- database objects
+
+select *
+from user_objects;
+
+--- force views
+
+Even if table is not present, a view can be created using FORCE keyword.
+
+Create or replace force view v as
+Select *
+From emp;
+
+-- read only views
+
+Create or replace view v as
+Select *
+From emp with read only;
+
+-- any DML operation through the view would update the base table
+
+-- WITH CHECK OPTION
+
+If it is used while creating the view, the column used in the where clause would be updated only if the condition is true.
+
+Eg.
+
+create view v as
+select *
+from emp
+where deptno = 20;
+
+-- 
+
+update v
+set deptno = 20;     ----  error
+
+--
+
+create view v as
+select *
+from emp
+where deptno = 20 and salary <= 2000;
+
+
+update v
+set salary = 500;     ----  valid because still salary would be <= 2000
+
+-- if both the tables share the same name of the joining column, then join can be performed as
+
+select *
+from emp 
+inner join dept 
+using(deptno);
+
+-- if the view gets the data from more than one table and the records are deleted from the view then the records are deleted from the
+detail table only and not the master table.
+
+
+If a column from the base table is dropped, the view becomes unavailable.
+We can create view on a view itself.
+
+-- sequences
+
+Select *
+From user_sequences; --- returns all the sequences
+
+Create sequence s; --- creating a simple sequence with default values
+
+Create sequence s
+Increment by 1 --- increments the value by 1
+Minvalue 101 --- minimum value will be 101
+Maxvalue 150 --- maximum value will be 150
+Cycle --- sequence starts again after reaching the maxvalue
+Cache 20; --- cache will store 20 values as soon as nextval is executed
+
+Cache size can be at least 1 or use NOCACHE.
+
+Minimum cache size can be 2;
+
+Default sizes :
+
+Minvalue --- 1
+
+Maxvalue --- 99999999999999999999 (not exact)
+
+Cache ---- 20
+
+Cycle ---- nocycle
+
+Start with --- minvalue
+
+Increment by ---- 1
+
+Cycle --- sequence continues forever with no cycle limits
+
+Nocycle --- sequence ends after reaching maxvalue
+
+-- altering a sequence
+
+Alter sequence s increment by 1 minvalue 5 maxvalue 50 nocache;
+
+Start with clause can’t be used while altering the sequence.
+
+START WITH has got the higher priority than MINVALUE and thats why for the first cycle, the
+value starts from the value of START WITH clause but from the second iteration onwards, the
+value starts from the value of MINVALUE clause.
+
+-- creating a decrementing sequence
+
+create sequence s2
+start with 40
+increment by -2
+minvalue 30
+maxvalue 50
+cycle
+Nocache;
+
+Sequence will start from 40, reach 30 and then again start from 50 and reach 30.
+
+select s2.currval,s2.nextval
+from dual; --- 38,38
+
+This is because of the fact that the statement will be executed at once and currval always gives
+the latest value only
+
+select s2.currval
+from dual; --- 38
+
+select s2.nextval,s2.nextval
+from dual; --- 36,36
+
+Nextval won’t get executed twice.
+
+--- granting permissions on sequence
+
+Grant select on s2 to user2;
+
+-- renaming a sequence
+
+Rename s2 to s3;
+
+--- using sequence values as auto-incremented values in the primary key values
+
+Insert into emp values(s.nextval,’abc’,’xyz’);
+
+-- even after rollback operation, sequence value doesn’t get resetted.
+
+Instead of dropping the sequence, we make it increment by -1 and then we execute NEXTVAL
+several times and then we would again make it increment by 1.
+
+-- SYNONYM
+
+It is an alias for an object. It can be of type private or public, private by default. It can’t be used
+for a part of an object. Private synonym is accessible only in the current schema.
+It doesn’t store any data. It can’t be made for more than one table.
+
+Create synonym s for emp;
+
+A synonym can be made for a table, view, synonym itself etc.
+
+Create public synonym s for emp;
+
+-- granting something to all the users
+
+Grant select on emp to public;
+
+A public synonym must be granted to public so that everyone could use it.
+
+select *
+from user_synonyms;            --  to get the list of synonyms
+
+
+-- INDEX
+
+Index is created on columns of a table. A unique non-clustered index is created on unique constraint and a unique clustered index
+is created on primary key column.
+When index is applied on a column, the data of that column will be copied in an indexed segment along with the rowid and hence 
+searching becomes extremely faster.
+
+select *
+from user_indexes;    --  to show all the indexes
+
+
+create index index_name on table_name(column_name);
+
+create index i on emp(empno);    ---  data will be copied in the indexed segment as it is
+
+create index i on emp(empno asc);    ---  data will be copied in the indexed segment in the ascending order
+
+create index i on emp(empno desc);    ---  data will be copied in the indexed segment in the descending order
+
+only the data of the indexed column is copied in the indexed segment
+
+drop index i;   --  to drop an index
+
+create unique index i on emp(empno);    ---  unique index will be created
+
+-- getting all the data dictionary views
+
+select *
+from dict;
+
+-- showing the oracle version
+
+show release;
+
+-- creating a clustered index 
+
+First we need to create a cluster :
+
+create cluster cluster_name(variable1 datatype,variable2 datatype..);
+
+create cluster clus(n number);
+
+Means this cluster can be created on a single column only. Then we will create the table and associate this cluster with that table.
+
+create table t
+(
+id number,
+name varchar(20)
+) cluster clus(id);
+
+Now, we can't insert a record in this table until we create an index on this cluster as :
+
+create index i on cluster clus;
+
+Now, record can be inserted.
+
+
+--- OBJECT TYPE
+
+Object type is a user-defined type. It can be used as a column's datatype in a table.
+
+select *
+from user_types;    ----  to get all the object types
+
+
+create type ty as OBJECT
+(
+hno number,
+city varchar(20)
+);
+/
+
+alter type ty final;           -- now the type can't be altered
+
+alter type ty not final;           -- now the type can be altered
+
+alter type ty instantiable;           
+
+alter type ty not instantiable;           
+
+alter type ty add attribute(attr1 number,attr2 number);   -- adding attributes to a type
+
+alter type ty drop attribute(attr1,attr2);   -- dropping attributes of a type
+
+drop type ty;   -- dropping a type
+
+-- using type to define a customized datatype
+
+-- creating a country type
+
+create type COUNTRY as object
+(
+country_code number,
+country_name varchar(20)
+);
+
+-- creatig a city type
+
+create type CITY as object
+(
+city_code number,
+city_name varchar(20),
+country_details country
+);
+
+-- creating an address type
+
+create type ADDRESS as object
+(
+house_number number,
+district_name varchar(20),
+city_details city
+);
+
+-- creating the person table which would use the above types
+
+create table person
+(
+id number,
+name varchar(20),
+address_details address
+);
+
+insert into person values(1,'Rohit',ADDRESS(408,'South West Delhi',CITY(101,'New Delhi',COUNTRY(1001,'India'))));
+
+insert into person values(2,'Lucky',ADDRESS(409,'North West Delhi',CITY(101,'New Delhi',COUNTRY(1001,'India'))));
+
+insert into person values(3,'Scott',ADDRESS(410,'Washington',CITY(201,'New York',COUNTRY(1002,'USA'))));
+
+
+So as to use the where clause, the table must be given an alias and then the where clause can be used along with that alias name.
+
+Eg. to fetch the records having country as USA (country_code = 1002)   :
+
+select *
+from person 
+where address_details.city_details.country_details.country_code = 1002;             -----   error 
+
+
+select *
+from person "p"
+where "p".address_details.city_details.country_details.country_code = 1002;           ------ OK
+
+
+-- setting the depth of the tables so as to check the type details
+
+set desc depth 4;
+
+-- deleting a record using the object type column
+
+delete person 
+where address_details.city_details.country_details.country_code = 1002;       ----  error
+
+--- after giving alias
+
+delete person "p"
+where "p".address_details.city_details.country_details.country_code = 1002;      ----- OK
+
+
+--- NESTED TABLE
+
+Nested table can have multiple rows of object type where as object table can have only only a single row. Due to this, we can have 
+multiple valued columns such as multiple address, multiple contact numbers, etc. without repeating the other values of the same 
+record and repeating that record again and again.
+
+--- creating a type
+
+create type project as object
+(
+project_code number,
+project_name varchar(50)
+);
+
+--- creating a table of these types
+
+create type projects as table of project;
+
+-- creating a normal table and making a nested table into it
+
+create table student
+(
+id number,
+name varchar(20),
+project_details projects
+)nested table project_details store as proj;
+
+
+-- inserting data in the main table and the nested table
+
+insert into student values(1,'Rohit',projects(project(101,'Airline Reservation'),
+					      project(102,'Online Billing'),
+					      project(103,'Library Management')
+					     )
+			  );
+
+insert into student values(2,'Scott',projects(project(201,'Hotel Management'),
+					      project(202,'Theatre Billing'),
+					      project(203,'College Management')
+					     )
+			  );
+
+
+select *
+from student;    ---- it will give results in a non-understandable manner
+
+select *
+from table
+(
+select project_details
+from student 
+where id = 1
+);               ---- it will give the results in a proper way and only the contents of the nested table will be shown
+
+
+-- inserting data into the nested table only
+
+insert into table
+(
+select project_details
+from student
+where id = 2
+)
+values(project(204,'Resource Management'));
+
+
+-- updating the data of the nested table only
+
+update table(select project_details from student where id = 2)
+set project_name = 'Resource Manager'
+where project_code = 204;
+
+-- deleting the data of the nested table only
+
+delete table(select project_details from student where id = 2)
+where project_code = 204;
+
+
+-- in case nested table has the attribute values of built-in type. Eg.
+
+create type mobile as table of varchar(10);
+
+create table person
+(
+id number,
+name varchar(20),
+mobiles mobile
+)nested table mobiles store as mob;
+
+-- inserting data 
+
+insert into person values(1,'Rohit',mobile('9999401240','9810542702','7011237474'));
+
+--- built-in function "COLUMN_VALUE" is used while retreiving the nested table contents because just a single column is retrieved 
+in this case.
+
+
+-- inserting in just the nested table
+
+insert into table(select mobile
+	          from person
+		  where id = 1
+                 ) values('8285828272');
+
+
+-- updating just the nested table
+
+update table(select mobile
+             from person
+             where id = 1
+            )
+set column_value = '9810542703'
+where column_value = '9810542702';
+
+
+-- deleting just the nested table 
+
+delete table(select mobile
+             from person
+             where id = 1
+            )
+where column_value = '7011237474';
+
+--- Global temporary tables
+
+Data from these tables will be preserved or deleted will depend on the clause specified at the
+end.
+
+Create Global temporary table gll
+(
+ID number,
+name varchar(20)
+)on commit delete rows;
+
+In this case, rows will be deleted after the commit.
+
+Create Global temporary table gll
+(
+ID number,
+name varchar(20)
+)on commit preserve rows;
+
+In this case, rows will be not be deleted after the commit.
+But in both the cases, the data will be stored till the current session only.
+
+--- compressed tables
+
+Create table t
+(
+Id int,
+Name varchar(20)
+)compress;
+
+-- making the table as compressed one
+
+Alter table t compress;
+
+-- uncompressing the table
+
+Alter table t nocompress;
+
+-------------- script to drop all the tables -----------------------------------
+
+declare
+i varchar(20);
+cursor cur is select * from tab;
+begin
+for c in cur
+loop
+i := 'drop table ' || c.tname;
+execute immediate(i);
+end loop;
+end;
+
+--- virtual tables
+
+These are the tables having virtual columns. Those virtual columns won’t require the external
+values to be inserted rather they would store the result of an expression after the specified
+expression is evaluated.
+
+create table person
+(
+id number,
+name varchar(20),
+sal number,
+comm number,
+gross number generated always as (sal+(0.1*comm)) virtual
+);
+
+Datatype of the column, keywords “GENERATED ALWAYS” and keyword “VIRTUAL” are
+optional and hence can be skipped.
+
+create table student
+(
+id number,
+name varchar(20),
+sal number,
+comm number,
+gross as (sal+(0.1*comm))
+);
+
+Deliberate use of insert operation on virtual columns is an error.
+
+------------- To see the expression of the virtual columns
+
+select data_default
+from user_tab_columns;
+
+-------- Materialized views
+
+These are the kinds of views which physically store data inside them unlike the normal views
+and bring data from the other tables that act as base tables for that view.
+These views have a refresh rate and hence their data is refreshed after certain interval.
+
+
+create materialized view mv
+refresh complete
+start with sysdate
+next trunc(sysdate) + 1
+as select * from student where id = 1;
+
+------- next trunc(sysdate) + 1
+
+specifies that the data will be refreshed at 12 am the next day.
+
+--------- refreshing after 2 minutes
+
+create materialized view mv
+refresh complete
+start with sysdate
+next sysdate + interval '2' minute
+as select * from student where id = 1;
+
+
+-- inserting into multiple tables using a single table
+
+1. Unconditional Insert ( Insert All )
+
+insert all 
+           into emp1 values(eno,ename,sal)
+	   into emp2 values(eno,ename,dob,sal)
+	   into emp3 values(eno,dob)
+select empno eno,ename,hiredate dob,sal,comm from emp;
+
+Here, alias helps in matching the column names of insert and the select statement.
+
+
+since, emp table has 14 rows, 42 records will be inserted.
+
+select statement is mandatory in this case.
+
+-- if a table has n records, then
+
+select 1 from emp;   ---- it will give 1 n number of times
+
+-- hardcoding the values 
+
+insert all
+           into emp1 values(eno,ename,sal)
+           into emp2 values(eno,ename,dob,sal)
+           into emp3 values(eno,dob)
+select 1 eno,'Rohit' ename,'01/jul/1994' dob,13452 sal,comm from emp;
+
+this will insert 14 records in each table but with the hardcoded values.
+
+-- in case we just need to insert a single record in the target tables, we can use dual table.
+
+insert all into emp1 values(eno,ename,sal)
+           into emp2 values(eno,ename,dob,sal)
+           into emp3 values(eno,dob)
+select 1 eno,'Rohit' ename,'01/jul/1994' dob,13452 sal from dual;
+
+-- nvl(comm,0) = 0 -- this condition will be true if comm is zero or null.
+
+2. Insert All ( Check All Insert in All )
+
+Here, first record will be checked with the first condition, if it matches then the record will be inserted in that table otherwise
+it will not be inserted. Then the same record will be checked for the second condition and the same process will happen. The process
+for the same record will happen for all the conditions and hence in case, the record matches with all the conditions, it will be 
+inserted in all the tables. Similar process will happen with all the records of the source table. Hence, it is called Check All, 
+Insert in All method.
+
+insert all
+          when deptno = 10      then  into emp1 values(eno,ename,sal)
+          when sal < 2500       then  into emp2 values(eno,ename,dob,sal)
+          when nvl(comm,0) = 0  then  into emp3 values(eno,dob)
+select empno eno,ename,hiredate dob,sal,deptno,comm from emp;
+
+All the columns used in the conditions must be there in the select clause of the source table(emp in this case);
+
+select * from emp where comm != 0;    -- this will only give records where comm is not equal to zero. Nulls will not be considered
+					 in this case(even though null is not equal to zero) because null can't be used with 
+					 = operator.
+
+In the above cases, the records which don't match with any of the conditions are simply discarded. But if we want, we can store them
+in a separate table using else clause. Eg.
+
+insert all
+          when deptno = 10   then into emp1 values(eno,ename,sal)
+          when sal <= 2000   then into emp2 values(eno,ename,dob,sal)
+          when comm != 0     then into emp3 values(eno,dob)
+          else                    into emp4 values(eno,sal)
+select empno eno,ename,hiredate dob,sal,deptno,comm from emp;
+
+
+--- coverting a number into words
+
+select to_char(to_date(1234,'j'),'jsp') from dual;          ---- One thousand two hundred thirty four
+
+but the number must be between 1 and 5373484
+
+
+3. Insert First ( Check All Insert in One )
+
+Here, first record will be checked with the first condition, if it matches then the record will be inserted in that table otherwise
+it will not be inserted. If the record was inserted, the next record will be checked but if it wasn't, the same record will be 
+checked for the second condition and the same process will happen. Once the record has been inserted into a table, it will not be
+inserted in another table. In case, it is not matched with any condition, it will be inserted in the table present in the else
+clause. Similar process will happen with all the records of the source table. Hence, it is called Check All, Insert in One method.
+
+---- unmatched records will be rejected
+
+insert first
+            when deptno = 10   then into emp1 values(eno,ename,sal)
+            when sal <= 2000   then into emp2 values(eno,ename,dob,sal)
+            when comm != 0     then into emp3 values(eno,dob)
+select empno eno,ename,hiredate dob,sal,deptno,comm from emp;
+
+------ unmatched records will be inserted into emp4
+
+insert first
+            when deptno = 10   then into emp1 values(eno,ename,sal)
+            when sal <= 2000   then into emp2 values(eno,ename,dob,sal)
+            when comm != 0     then into emp3 values(eno,dob)
+            else                    into emp4 values(eno,sal)
+select empno eno,ename,hiredate dob,sal,deptno,comm from emp;
+
+
+Basic difference between insert all and insert first is that in case of insert all, a record can be inserted in all the tables at a
+time but in case of insert first, a record can be inserted only in single table at a time.
+
+
+--- rollup function
+
+If we need to find the sub-total as well as the grand total of the records fetched using group by function by grouping them into
+sets, we can use rollup function as
+
+
+select deptno,job,sum(sal) from e
+group by rollup(deptno,job)
+order by deptno;
+
+
+    DEPTNO JOB         SUM(SAL)
+---------- --------- ----------
+        10 MANAGER         2450
+        10 PRESIDENT       5000
+        10                 7450
+        20 ANALYST         3000
+        20 CLERK           1900
+        20 MANAGER         2975
+        20                 7875
+        30 CLERK            950
+        30 MANAGER         2850
+        30 SALESMAN        5600
+        30                 9400
+
+    DEPTNO JOB         SUM(SAL)
+---------- --------- ----------
+                          24725
+
+
+Without rollup function, the subtotal will not be shown. Eg.
+
+
+select deptno,job,sum(sal) from e
+group by deptno,job
+order by deptno;
+
+
+    DEPTNO JOB         SUM(SAL)
+---------- --------- ----------
+        10 MANAGER         2450
+        10 PRESIDENT       5000
+        20 ANALYST         3000
+        20 CLERK           1900
+        20 MANAGER         2975
+        30 CLERK            950
+        30 MANAGER         2850
+        30 SALESMAN        5600
+
+
+-- grouping sets
+
+If we want to perform grouping based on certain groups only, we can use grouping sets.
+
+select deptno,job,sum(sal) from e
+group by grouping sets((deptno),(job))
+order by deptno;
+
+
+    DEPTNO JOB         SUM(SAL)
+---------- --------- ----------
+        10                 7450
+        20                 7875
+        30                 9400
+           ANALYST         3000
+           PRESIDENT       5000
+           SALESMAN        5600
+           CLERK           2850
+           MANAGER         8275
+
+In this case, grouping based on deptno & job and together as a whole (grand total) haas not taken place. So, this can reduce the
+unwanted groupings.
+To use all the groups :
+
+
+select deptno,job,sum(sal) from e
+group by grouping sets((deptno),(job),(deptno,job),())
+order by deptno;
+
+
+If we don't want to get the subtotals but only the grand total, it is also possible as :
+
+
+select deptno,job,sum(sal) from e
+group by rollup((deptno,job));
+
+
+    DEPTNO JOB         SUM(SAL)
+---------- --------- ----------
+        10 MANAGER         2450
+        10 PRESIDENT       5000
+        20 CLERK           1900
+        20 ANALYST         3000
+        20 MANAGER         2975
+        30 CLERK            950
+        30 MANAGER         2850
+        30 SALESMAN        5600
+                          24725
+
+
+---- set transaction 
+
+It must be the first statement of the transaction. We need to commit or rollback the current transaction to start a new one.
+
+set transaction read only;   ---- read only mode (DML operations not possible)
+
+set transaction read write;   --- default mode (DML operations are possible)
+
+
+------ partitioned tables
+
+A partitioned table allows us to make partitions of a table and perform DML operations on those partitions.
+
+1. Range Partition
+
+create table t
+(
+id number,
+name varchar(20)
+)
+partition by range(id)
+(
+partition p1 values less than (10),
+partition p2 values less than (20),
+partition p3 values less than (30)
+);
+
+
+Now, records will be inserted into the partitions based on the condition specified in the partition clause.
+
+--- retrieving the records from the partitions  
+
+select * from t partition(p1);         ---- from partition 1
+
+select * from t partition(p2);         ---- from partition 2
+
+select * from t partition(p3);         ---- from partition 3
+
+select * from t;         ---- from main table
+
+record having id >= 30 couldn't be inserted in any of the partitions and not even in the main table.
+
+-- we can insert a record into a partition by our own as :
+
+insert into t partition(p1) values(7,'Scott');
+
+select * from t partition(p3) where id = 1;      --- searching within a partition only
+
+update t partition(p2)
+set name = 'Rocky'
+where id = 2;                     ----- it will search only in that partition and update accordingly. No data will be updated if 
+				  ----- the data doesn't exist in the partition ( even if it is present in the main table )
+
+
+Key column can also be updated and hence if the record needs to be moved into another partition after updation, it will throw an 
+error. So, we need to enable the ROW MOVEMENT option and then it will be possible.
+
+Alter table t enable ROW MOVEMENT;
+
+Now, any record can be moved into any partition after updation.
+
+If two columns are specified in the RANGE clause, then :
+
+It will check just the first column value and without checking the value of the second column, it will perform the insert operation.
+No matter what the value of second column is. The maximum value that can be inserted is the value specified in the last condition.
+The unmatched records will be inserted in the last partition if and only if the value matches the condition of the second column
+otherwise it will be rejected.
+
+--- creating a default partition
+
+Create table t
+(
+Id number,
+Name varchar(20),
+Sal number
+)
+Partition by range(sal)
+(
+Partition p1 values less than (1000),
+Partition p2 values less than (2000),
+Partition p3 values less than (3000),
+Partition p4 values less than (maxvalue)
+);
+
+Now, when we insert a record in a table directly and if it doesn’t match with any partition, then it
+will be inserted in the default partition. Eg.
+
+Insert into t values(1,’Rohit’,500); --- partition 1
+
+Insert into t values(2,’Scott’,1500); --- partition 2
+
+Insert into t values(3,Lucky’,2500); --- partition 3
+
+Insert into t values(4,’Rocky’,3500); --- partition 4
+
+
+2. LIST partition
+
+create table emp
+(
+id number,
+sal number
+)
+partition by list(sal)
+(
+partition p1 values (100,200,300),
+partition p2 values (400,500,600),
+partition p3 values (700,800,900)
+);
+
+LIST partition can’t have maxvalue and hence there is not the option to insert the default values
+rather it can have the option to receive all the null values by default in a particular partition. Eg.
+
+create table emp
+(
+id number,
+sal number
+)
+partition by list(sal)
+(
+partition p1 values (100,200,300),
+partition p2 values (400,500,600),
+partition p3 values (700,800,900),
+partition p4 values (null)
+);
+
+-- to check the partitions of all the tables
+
+select *
+from user_tab_partitions;
+
+-- altering the names of partition
+
+alter table t
+rename partition p4 to p4_modified;
+
+--- exchanging the partitioned table data with any other table
+
+alter table t
+exchange partition p2 with table t1;
+
+The object whichever is empty, data will be pushed into that object. Eg. partitioned table has
+data but the non-partitioned table is empty, then data from partitioned table would move to the
+non-partitioned table. It would be a cut and paste method. Hence the partitioned table would not
+have the data.
+Similarly, if non-partitioned table has data but the partitioned table is empty, then data from
+non-partitioned table would move to the partitioned table. But the syntax would remain exactly
+same as :
+
+alter table t
+exchange partition p2 with table t1;
+
+In case, both, partitioned table as well as non-partitioned table have data, then data of both the
+tables will be interchanged and hence non-partitioned table would have data of partitioned table
+and partitioned table would have data of non-partitioned table.
+
+-- truncating the partitions
+
+Alter table t
+Truncate partition p1;
+
+-- dropping a partition
+
+Alter table t
+Drop partition p1;
+
+-- deleting the data of partition
+
+Delete t partition(p1);
+
+INDEXED ORGANIZED TABLE : To create such a table, atleast one primary key column must be there. It stores the data in sorted order 
+always unlike the normal tables. ORGANIZATION INDEX keyword is used to make such a table.
+
+
+create table t1
+(
+id number primary key
+);
+
+
+create table t2
+(
+id number primary key
+)ORGANIZATION INDEX;
+
+
+insert into t1 values(11);
+insert into t1 values(1);
+insert into t1 values(5);
+insert into t1 values(22);
+
+
+insert into t2 values(11);
+insert into t2 values(1);
+insert into t2 values(5);
+insert into t2 values(22);
+
+
+select * from t1;
+
+        ID
+----------
+        11
+         1
+         5
+        22
+
+
+select * from t2;
+
+        ID
+----------
+         1
+         5
+        11
+        22
+
+--- to connect to DBA
+
+connect /as sysdba;
+
+
+---- storing the scripts
+
+save file_name.sql; Eg.
+
+save file1.sql;
+
+--- retrieving the contents of script
+
+get file1.sql;
+
+--- editing the script
+
+edit file1.sql;
+
+------ execute the script
+
+start file1.sql;
+
+or 
+
+@file1.sql;
+
+
+path where the files are stored :
+
+C:\app\Rohit\product\11.2.0\dbhome_1\BIN
+
+
+---------- external tables
+
+External tables are the tables which are not stored in the database rather they are present in the disk.
+
+-- granting privilege to create/drop directories
+
+grant create any directory to scott;
+
+revoke create any directory from scott;
+
+drop directory dir1;
+
+
+First of all, we need to create a normal directory and store a normal text file with some data(that needs to be read) in that 
+directory. This is because the database would not create the directory and files for us. Then we qualify that directory as oracle 
+directory by assigning it a name which would be used by oracle to identify that directory. The directory name recognised by oracle
+can be same as that of the directory's original name.
+
+
+create directory dir1 as 'e:\rohit_dir';
+
+dir1 : directory name recognised by oracle(stored in database)
+
+rohit_dir : original directory created by us(stored in disk)
+
+create table t
+(
+id number,
+name varchar(20),
+salary number
+)
+organization external 
+(
+default directory dir1
+access parameters (records delimited by ';'
+                  fields terminated by ','
+                 )
+location ('abc.txt')
+);
+
+
+This 'abc.txt' file would be present in the directory 'rohit_dir'. It will have the records in the manner decided in the table 
+creation and the contents would be read by the database using this file. So, this would be referred to as the external table.
+
+--- Delimiting the records using newline character
+
+create table t
+(
+id number,
+name varchar(20),
+salary number
+)
+organization external
+(
+default directory dir1
+access parameters(
+		  records delimited by newline
+		  fields terminated by ','
+		 )
+location('abc.txt')
+);
+
+---- skipping the headers
+
+
+create table t
+(
+id number,
+name varchar(20),
+salary number
+)
+organization external
+(
+default directory dir1
+access parameters(
+		  records delimited by newline
+		  skip 2                              -- to skip the header and the next line as well
+		  fields terminated by ','
+		 )
+location('abc.txt')
+);
+
+-- to get all the external tables
+
+Select * from user_external_tables;
+
+By default, a DML lock is placed on a row when it is undergoing any DML operation by a user.
+Any other user who wants to perform a DML operation on that row, would be placed in the
+queue and hence a lock will be applied on that row until the previous user does a commit or
+rollback. If the next user tries to read the data of that row, he will see the uncommitted data only.
+
+-- locking a table
+
+Lock table scott.emp in share mode;
+
+-- pseudo columns
+
+“Rownum” can be used with only “= 1”, “<” and “<=” because it is just a pseudo column.
+
+---- generating reports
+
+Spool command is used. Eg.
+
+Spool path_of_file. 
+
+Spool c:\app\rohit\file1.csv;
+
+Spool off; ---- to specify the end of file contents
+
+Use text to columns to properly format the data in excel file.
+
+---- setting the column separator
+
+Set colsep “,” ; ------ comma will be the separator
+
+---- setting the formats
+
+Set header off;
+
+Set termout off;
+
+Set feedback off;
+
+Similarly, we can generate text files and HTML files as well.
+
+Spool c:\app\rohit\file1.txt;
+
+set markup html on;    ----  to enable conversion of html code into graphical mode
+
+Spool c:\app\rohit\file1.html;
+
+set markup html off;    ----  to disable conversion of html code into graphical mode
+
+A NULL is not equal to another NULL and thats why unique constraint allows any number of nulls.
+
+We have to use "IS" so as to compare any value with NULL.
+
+Role "RESOURCE" has basic user privileges.
+
+--- Printing apostrophe sign as normal printable character
+
+select 'rohit''s' from dual ;   ----- rohit's
+
+select 'rohit''''s' from dual ;   ----- rohit''s
+
+'' will produce ' as output
+
+another way is :
+
+
+select q'[rohit's]' from dual ;   ----- rohit's
+
+text written in q'[ ]' will be printed as it is.
+
+However, this can't be used as it is in a string. Concatenation operator is required for this purpose.
+
+select 'My friend is ' || q'[rohit's]' || ' cousin''s friend' from dual ;   ----- rohit's
+
+To print & as normal printable character,
+
+set define off;
+
+select 'rohit&abc' from dual;   ---- rohit&abc
+
+and then
+
+set define on;
+
+show define;  --- to check the status of define 
+
+chr(any ascii value) :   would return the character with that ASCII value
+
+select chr(38) from dual;   --- &
+
+
+--- CTEs ( Common Table Expressions )
+
+Used to store temporary result sets
+
+With cte as
+(
+
+)
+Select * from cte;
+
+Storing queries in a temporary way so that they can be used further i.e. branching of CTEs.
+
+With
+cte1 as
+(
+
+),
+Cte2 as
+(
+
+),
+Cte3 as
+(
+
+)
+Select * from cte3;
+
+Final CTE (cte3 in this case) holds the final recordset. Eg.
+
+with
+cte1 as
+(
+select deptno,sum(salary) "Sum"
+from t
+group by deptno
+),
+cte2 as
+(
+select avg("Sum") "Sums"
+from cte1
+)
+select c1.deptno,c1."Sum" from cte1 c1,cte2 c2
+where c1."Sum" > c2."Sums"
+
+In this case, we have found out the deptno and the sum of salaries of those departments who
+are earning salaries greater than the average salary.
+
+---- setting the time elapsed on the query to visible
+
+Set timing on;
+
+--- analytical functions
+
+RANK( ) : it assigns the rank to the records on a temporary basis but in case, duplicate records
+are there, those many records will be assigned a common rank and the next record will have the
+rank which was supposed to be the original rank.
+
+DENSE_RANK( ) : It is similar to RANK( ) but the only difference is that it will assign the rank to
+the record (next to the common records) the rank which is next to the common rank of the
+common records.
+
+ROW_NUMBER( ) : It assigns a temporary number to every record and order by clause is
+mandatory.
+
+LEAD( ) : It returns the value of a column of the next record as specified in the parameters.
+
+LEAD(column_name,Lead_columns,default_value)
+
+Lead_columns : it is 1 by default (columns to be skipped).
+
+Default_value : it is displayed if there are no rows beyond the last row. It is null by default.
+
+LAG( ) : Exactly similar to LEAD( ) but it returns the previous records.
+
+Only first parameter is required, rest are optional.
+
+select id,name,salary,lead(salary,0,0) over(order by id),lag(salary,0,0) over(order by id) from t;
+
+The above query would nullify the use of the functions.
+
+--- listing the names of a column separated by comma
+
+select deptno,listagg(name,',') within group (order by name)
+from t
+group by deptno;
+
+“Refresh fast” would only add the incremental changes in the materialized view.
+
+Altering a materialized view :
+
+Alter materialized view mv refresh fast;
+
+Alter materialized view mv refresh complete;
+
+“Refresh on demand” allows us to have a view which would be refreshed manually by
+
+Execute dbms_mview.refresh(view_name,refresh_mode);
+
+Execute dbms_mview.refresh(mv,’c’);
+
+Execute dbms_mview.refresh(mv,’f’);
+
+But for fast refresh, a log is required.
+
+Create materialized view log mv_log on mv;
+
+
+---------------------------------------------------------------------------------------
+-----------------------------------------  PL/SQL  ------------------------------------
+---------------------------------------------------------------------------------------
+
+PL/SQL supports all the features of SQL. Each program in PL/SQL is known as a Block. Each
+statement is wrapped in a block unlike SQL where statements are executed individually. Each
+block produces a single request to the database. No matter how many statements are there in
+the block. Re-compilation of a block is not required.
+
+Structure of a block :
+
+Declare ( optional )
+----
+----
+Begin
+----
+----
+----
+Exception ( optional )
+----
+----
+End;
+
+Show serveroutput; ---- to check serveroutput
+
+Set serveroutput on; ---- to set the serveroutput on
+
+Now, results will be visible on the screen
+"dbms_output" is a package in which "put_line" is a procedure which accepts just a single
+parameter.
+
+dbms_output.put_line(' ') is used to print the data on the screen and the cursor would move to
+the next line.
+
+dbms_output.put(' ') is used to print the data on the screen but the cursor would stay on the
+current line only.
+
+But “dbms_output.put(' ')” would push the data in the buffer only. Hence, we need to execute
+dbms_output.put_line(' ') once so as to print the data on the screen.
+
+By default, the server output is off and it needs to be set on so as to get the results on the
+screen.
+
+begin
+dbms_output.put_line('Hello');
+dbms_output.put('World');
+dbms_output.put_line('Welcome');
+dbms_output.put('Again');
+end;
+
+Output :
+
+Hello
+WorldWelcome
+
+“dbms_output.new_line( )” would just move the cursor to the new line.
+
+----- to enable/disable the output
+
+Execute dbms_output.disable; ---- disabling the output
+
+Execute dbms_output.enable; ---- enabling the output
+
+Sample code :
+
+declare
+a number; ---- declaration
+begin
+a := 10; ---- assignment
+dbms_output.put_line(a);
+end;
+
+declare
+a number := 10 ; ---- initialization
+a number default 10 ; ---- another way of initialization
+a varchar(20) := ‘Delhi’ ; ---- initialization
+a varchar(20) default ‘Delhi’ ; ---- another way of initialization
+
+--- declaring constants
+
+a constant number := 10 ; ---- initialization
+a constant number default 10 ; ---- another way of initialization
+
+Declaration of all possible objects in the declaration section :
+
+Declare
+Cursor c as select * from emp;
+Ex exception;
+Type t1 as table of number;
+Procedure p1 as ;
+
+--- to get the packages
+
+Select * from dba_source;
+EXCEPTIONS :
+Declare
+
+Begin
+
+Exception
+
+When VALUE_ERROR then
+dbms_output.put_line(‘Exception occurred’);
+
+When OTHERS then -------------- Default Exception
+dbms_output.put_line(‘Default Exception occurred’);
+End;
+
+By default, PL/SQL block doesn’t provide us memory. So, we need to store the data fetched
+using SELECT keyword into any variables and thats why we need to use INTO keyword to store
+the values into the variables defined by us.
+
+Only DML,DRL and TCL commands are allowed directly in the PL/SQL block.
+
+
+%TYPE : It is used to dynamically find out the data type of a column. This ends the chances of the unmatching of the variable taken
+in the block and the data type of the column used in the original table. Eg.
+
+declare 
+name emp.ename%type;
+begin
+select ename into name
+from emp
+where empno = 7369;
+dbms_output.put_line('Employee Name : ' || name);
+end;
+
+Here, if there is a need to copy the type of a table's all the columns, then we would need that many variables. So as to avoid that
+thing, we can dynamically fetch the details of all the column types using %ROWTYPE. Eg.
+
+declare
+employee emp%ROWTYPE;
+begin
+select empno,ename,sal
+into employee.empno,employee.ename,employee.sal
+from emp
+where empno = 7369;
+dbms_output.put_line('Emp No. : ' || employee.empno || ' , Emp Name : ' || employee.ename || ' , Sal : ' || employee.sal);
+end;
+
+------ Named blocks
+
+It will be easy for us to access the variables using their block name and hence, global and local variables can be distinguished.
+
+
+<<abc>>                   ----- Block Variable Name
+declare 
+a number := 10;
+begin
+dbms_output.put_line(abc.a);
+dbms_output.put_line(a);
+<<xyz>>
+declare 
+a number := 20;
+begin
+dbms_output.put_line(a);
+dbms_output.put_line(abc.a);
+dbms_output.put_line(xyz.a);
+end;
+end;
+
+Output :
+
+10
+10
+20
+10
+20
+
+Not only block, we can have a name for a particular statement as well.
+
+---- exiting from a loop 
+
+if(x > 10) then
+RETURN;    ---- exit from that function
+end if;
+
+---- control structures
+
+1. IF clause
+
+declare
+a number := 10;
+begin
+if(a = 10) then
+dbms_output.put_line(10);
+end if;
+end;
+
+2. IF-ELSE clause
+
+declare
+a number := 10;
+begin
+if(a = 10) then
+dbms_output.put_line(10);
+else
+dbms_output.put_line('Other');
+end if;
+end;
+
+3. IF-ELSE-IF clause
+
+Style 1 : As many "end if" are required as there are "if" clauses.
+
+declare
+a number := 10;
+begin
+if(a = 10) then
+dbms_output.put_line(10);
+else if(a = 15) then
+dbms_output.put_line(15);
+else if(a = 20) then
+dbms_output.put_line(20);
+else
+dbms_output.put_line('Other');
+end if;
+end if;
+end if;
+end;
+
+
+Style 2 : Only one "end if" is required no matter how many "if" clauses are there but "elsif" is used in place of "else if".
+
+declare
+a number := 10;
+begin
+if(a = 10) then
+dbms_output.put_line(10);
+elsif(a = 15) then
+dbms_output.put_line(15);
+elsif(a = 20) then
+dbms_output.put_line(20);
+else
+dbms_output.put_line('Other');
+end if;
+end;
+
+
+If we don't want to put any statement, simply type NULL. It will act as a statement only.
+
+------------ loops
+
+1. Exit When loop ( similar to do-while loop in Java )
+
+loop
+----
+----
+exit when any_condition;
+end loop;
+
+2. While loop
+
+while(condition)
+loop
+----
+----
+end loop;
+
+3. For loop ( similar to foreach loop in Java )
+
+for i in 1..10   -------- incremental loop ( 1 to 10 )
+loop
+----
+----
+end loop;
+
+The main advantage of counter variable in for loop is that it doesn't need to be declared. Upper limit should be greater than or
+equal to the lower limit otherwise loop would not execute.
+
+for i in reverse 1..10   -------- decremental loop ( 10 to 1 but the syntax won't be changed as 10..1 or something )
+loop
+----
+----
+end loop;
+
+The drawback of for loop is that we can't modify the value of counter variable in any case. But we can use the value of the counter
+variable in calculations.
+
+"goto" can be used to jump to a particular statement.
+
+<<xyz>>
+begin
+----
+----
+----
+goto xyz;
+end;
+
+"return" statement is used to come out of a particular block.
+
+-- operators in PL/SQL
+
+:=   Assignment
+
+**  Exponentiation ( similar to power(a,b) function )
+
+..  Range
+
+^= / ~=  Not equal to ( similar to != / <>. ~= doesn't work in SQL but works in PL/SQL )
+
+=>  Association operator ( similar to : in C# while passing the arguments in a procedure/function )
+
+Normally, the values will be passed in the order the parameters are defined in the procedure but if we need to pass a specific value
+to a specific parameter, we can use => operator. Eg.
+
+create procedure p1(a number,b number)
+as
+begin
+dbms_output.put_line('a : ' || a || ' , b : ' || b);
+end;
+/
+
+execute p1(10,20);    a : 10 , b : 20
+
+execute p1(b => 10,a => 20);    a : 20 , b : 10
+
+
+----- creating functions
+
+create function f1(a number,b number) return number
+as
+begin
+return(a+b);
+end;
+
+select f1(10,20) from dual;    ---- 30
+
+If the parameter is of type varchar, size of the parameter must not be specified.
+
+--- procedures
+
+A procedure can not return a value but it may have a return statement so as to terminate its
+execution. "Return" statement is optional in procedure. However, it can't return a value, just the keyword "return" is used.
+
+Create procedure p1(parameter_list)
+As
+Declaration_of_variables
+Begin
+----------
+----------
+---------
+End;
+
+Show errors; ---- to see the errors created during the creation of recently compiled procedure
+
+Select * from user_errors; ---- to see all the errors
+
+----- getting the code of the procedures and the functions
+
+Select * from user_source;
+
+This will give all the information about the procedures and the functions.
+
+Select text from user_source; ------ gives the code of all the procedures and the functions
+
+Select text from user_source where name = ‘procedure_name’; ---- code of a specific procedure
+
+Select * from user_procedures; -------- gives all the procedures and functions
+
+“Execute/Exec” command is used to execute a procedure.
+
+Execute p1(parameter_list);
+
+To format the recently produced result, use recently column used name along with the format size. Eg.
+
+column column1 format A10;
+column column2 format A10;
+
+column empno format A10;
+column ename format A10;
+
+So as to reset the format changes, use "clear" option.
+
+column empno clear;
+column ename clear;
+
+DDL and DCL statements are not allowed directly in the procedures.
+
+------ to increase the number of records in a page
+
+set pages 20;
+
+------------- functions
+
+Create function f1(parameter_list) return return_type as
+Begin
+----
+----
+----
+return(value);
+end;
+
+create or replace function f1(a number,b number) return number as
+begin
+return(a+b);
+end;
+
+Select f1(10,20) from dual; ------- 30
+
+If function doesn’t accept any parameter, then no need to use the parenthesis. Similar
+functionality is there with procedures as well.
+
+create or replace function f1 return number as
+begin
+return(50);
+end;
+
+Select f1 from dual; ----- 50
+
+"var;" command is used to see the list of global variables defined in a particular session.
+
+Functions can directly be called as well. Eg.
+
+var a number;       ------ declaring a global variable
+execute :a := f1;   ----- ( ) not used because f1 doesn’t take parameters
+print :a;           ----- accessing a global variable
+
+
+If a function has DML write operation, that can’t be called using SELECT statement. 
+
+Alternate way to call a function having a DML write statement :
+
+Declare
+C number;
+Begin
+C := f1;              ----- ( ) not used because f1 doesn’t take parameters
+dbms_output.put_line('Value : ' ||C);
+End;
+
+"execute :a := f1;" is not valid inside a block. We would have to skip "execute" keyword.
+
+-------------------------------------------------------------------------
+
+------ calling a procedure inside a procedure ( valid )
+
+CREATE OR REPLACE PROCEDURE P1(A OUT NUMBER) AS
+BEGIN
+A := 100;
+END;
+
+
+CREATE OR REPLACE PROCEDURE P2 AS
+X NUMBER;
+BEGIN
+P1(X);                         ------- EXECUTE not used because it is invalid inside a block
+DBMS_OUTPUT.PUT_LINE('X : '||X);
+END;
+
+-------------------------------------------------------------------
+
+------ calling a function inside a function ( valid )
+
+CREATE OR REPLACE FUNCTION F1 RETURN NUMBER AS
+BEGIN
+RETURN(20);
+END;
+
+
+CREATE OR REPLACE FUNCTION F2 RETURN NUMBER AS
+x number;
+BEGIN
+x := f1;
+RETURN(x*30);
+END;
+
+or
+
+CREATE OR REPLACE FUNCTION F2 RETURN NUMBER AS
+BEGIN
+RETURN(f1*30);
+END;
+
+----------------------------------------------------------------------
+
+------ calling a function inside a procedure ( valid )
+
+CREATE OR REPLACE PROCEDURE P3 AS
+X NUMBER;
+BEGIN
+X := F1;
+DBMS_OUTPUT.PUT_LINE('VALUE RETURNED : '||X);
+END;
+
+OR
+
+CREATE OR REPLACE PROCEDURE P3 AS
+BEGIN
+DBMS_OUTPUT.PUT_LINE('VALUE RETURNED : '||F1);
+END;
+
+------------------------------------------------------------------------
+
+------ calling a procedure inside a function ( valid )
+
+CREATE OR REPLACE PROCEDURE P4 AS
+BEGIN
+DBMS_OUTPUT.PUT_LINE('PROCEDURE 4 INVOKED');
+END;
+
+
+CREATE OR REPLACE FUNCTION F4 RETURN NUMBER AS
+BEGIN
+P4;
+DBMS_OUTPUT.PUT_LINE('FUNCTION 4 INVOKED');
+RETURN(100);
+END;
+
+-------------------------------------------------------------------------
+
+Hence, any function/procedure can call any function/procedure inside it. However, we would have to skip the "execute" keyword while
+invoking a function/procedure inside a block.
+
+--- directly printing something on prompt
+
+execute dbms_output.put_line('Hello');
+
+--- directly printing value returned by a function on prompt
+
+execute dbms_output.put_line(f2(10,2));         ---- 20 if f2 returns 20
+
+A function can return NULL as well.
+
+---- local subprograms
+
+CREATE PROCEDURE P2 AS
+  PROCEDURE P3 AS             
+  BEGIN
+   DBMS_OUTPUT.PUT_LINE('LOCAL PROCEDURE');
+  END;
+BEGIN
+P3;
+DBMS_OUTPUT.PUT_LINE('MAIN PROCEDURE');
+P3;
+END;
+
+Here, P3 is a local procedure.
+
+Local subprograms can't be called directly, not even by the name of the parent subprogram.
+
+--- default parameters
+
+create or replace function f1(a number := 10,b number := 20) return number as
+begin
+return(a + b);
+end;
+
+If no value is supplied as the parameter during the function call, 10 and 20 will be used as the default values. Otherwise, the 
+supplied values will override 10 and 20;
+
+select f1 from dual;    ---- 30
+
+select f1(20) from dual;    ---- 40
+
+select f1(30,40) from dual;    ---- 70
+
+Input parameters can only be used to accept the values during compile time. They are read only variables and hence their value
+can't be modified.
+
+----  out parameters
+
+These are used to return multiple values by a function.
+
+create or replace function f1(a number := 10,b number := 20,c out number) return number as
+begin
+c := a * b;
+return(a + b);
+end;
+
+execute :a := f1(10,15,:b);
+
+print :a;       ---- 25
+
+print :b;       ---- 150       
+
+"a" and "b" must be global variables.
+
+If a function has out/ in out parameters, it can't be called using select statement.
+
+---- in out parameters
+
+These type of parameters can be used as input as well as output parameters.
+
+------ packages
+
+These are the collection of procedures and functions which can be wrapped in a single unit. A package needs to have a prototype known
+as package specification and the body. In specification, only the declaration of procedures and functions is allowed and in body, the
+definition of the same procedures and functions is required. If a subprogram is present in the body only, then it will be accessible
+only in the same package and not outside world. Hence, it is implementing one of the OOPS concepts i.e. Abstraction.
+
+---- package specification
+
+create package pkg as
+function f1 return number;
+function f2 return number;
+function f3 return number;
+procedure p1;
+end;
+
+----- defining package body
+
+create or replace package body pkg as
+
+function f1 return number as
+begin
+return(10);
+end;
+
+function f2 return number as
+begin
+return(20);
+end;
+
+function f3 return number as
+begin
+return(30);
+end;
+
+procedure p1 as
+begin
+dbms_output.put_line('Procedure in Package pkg');
+end;
+
+End; -------- package without its own executable statements. So, “begin” was not used.
+
+
+create or replace package body pkg as
+
+function f1 return number as
+begin
+return(10);
+end;
+
+function f2 return number as
+begin
+return(20);
+end;
+
+function f3 return number as
+begin
+return(30);
+end;
+
+Begin
+DBMS_OUTPUT.PUT_LINE('Body of Package');
+End; -------- package with its own executable statements. So, “begin” is used.
+
+In case, package has its own body, first the code present in the body of package, would be
+executed and then the code of the subsequent function or procedure would execute. But this
+thing would happen just for the first time i.e. code present in the body of the package would be
+executed only once and after any subsequent call only the code of the function or procedure
+would be executed.
+
+----- Executing the code of a procedure present in a package
+
+Select pkg.f1 from dual;   ----- 10
+
+Select pkg.f2 from dual;   ----- 20
+
+Select pkg.f3 from dual;   ----- 30
+
+execute pkg.p1;            ----- Body of Package
+
+Variables inside a package body must be present in the beginning. It is also possible to have
+local procedures and functions in the package body that is they need not be defined in the
+package specification and hence they won't be called out outside the package directly however
+functions present in the package globally can call those local functions. Eg.
+
+
+create or replace package pkg as
+function f1 return number;
+function f2 return number;
+procedure p1;
+end;
+
+
+create or replace package body pkg as
+function f3 return number as begin return(30);  end;          ------ local function
+function f1 return number as begin return(10); end;
+function f2 return number as begin return(f3);  end;
+procedure p1 as begin dbms_output.put_line('Procedure invoked'); end;
+end;
+
+Select pkg.f1 from dual;   ----- 10
+
+Select pkg.f2 from dual;   ----- 30
+
+Select pkg.f3 from dual;   ----- error because f3 is local to the package body
+
+Select pkg.p1 from dual;   ----- error
+
+execute pkg.p1;   ------  Procedure invoked
+
+----- triggers
+
+Triggers are the set of statements which are fired just after or before an event. We can have :
+
+1. Before/After trigger ( for normal tables )
+2. Instead of trigger ( for views )
+
+select * from user_triggers;            ----- to see all the triggers
+
+select trigger_name,table_name from user_triggers;            ----- prefer using this
+
+Row Level trigger :
+
+create table t1
+(
+id number,
+salary number,
+updsal number
+);
+
+insert into t1(id,salary) values(1,1000);
+
+insert into t1(id,salary) values(2,2000);
+
+insert into t1(id,salary) values(3,3000);
+
+-------- simply updating the values of columns using a trigger
+
+create or replace trigger tgr before insert on t1
+for each row
+begin
+:new.updsal := :new.salary + 100;
+end;
+
+------- after insert trigger ( table level )
+
+create or replace trigger tgr after insert on t2
+begin
+dbms_output.put_line('Trigger Message : Row Inserted Just Now.');
+end;
+
+------- after insert trigger ( row level )
+
+create or replace trigger tgr after insert on t2
+for each row
+begin
+dbms_output.put_line('Trigger Message : Row Inserted Just Now With ID : '||:new.Id);
+end;
+
+
+------- after update trigger ( table level )
+
+create or replace trigger tgr after update on t2
+begin
+dbms_output.put_line('Trigger Message : Row Updated Just Now');
+end;
+
+------- after update trigger ( row level )
+
+create or replace trigger tgr after update on t2
+for each row
+begin
+dbms_output.put_line('Trigger Message : Row Updated Just Now. Previous Salary : '||:old.Salary||' , New Salary : '||:new.Salary);
+end;
+
+
+------- after delete trigger ( table level )
+
+create or replace trigger tgr after delete on t2
+begin
+dbms_output.put_line('Trigger Message : Row Deleted Just Now');
+end;
+
+------- after delete trigger ( row level )
+
+create or replace trigger tgr after delete on t2
+for each row
+begin
+dbms_output.put_line('Trigger Message : Row Deleted Just Now With Id : '||:old.Id);
+end;
+
+
+----------- disabling the triggers on a table
+
+alter table t2 disable all triggers;
+
+----------- enabling the triggers on a table
+
+alter table t2 enable all triggers;
+
+
+----------- DDL triggers ( Drop, Never use it as nothing will be dropped then )
+
+----- preventing dropping of database objects ( at schema level )
+
+create or replace trigger tgr before drop on schema
+begin
+raise_application_error(-20001,'DBA Message : You can not drop objects.');
+end;
+
+
+----- preventing dropping of database objects ( at database level )
+
+create or replace trigger tgr before drop on database
+begin
+raise_application_error(-20001,'DBA Message : You can not drop objects.');
+end;
+
+
+----------- DDL triggers ( Create )
+
+create or replace trigger tgr after create on schema
+begin
+dbms_output.put_line('Trigger Message : Object Created');
+end;
+
+
+----------- DDL triggers ( Alter )
+
+create or replace trigger tgr after alter on schema
+begin
+dbms_output.put_line('Trigger Message : Object Altered');
+end;
+
+Similarly, we can have triggers for "rename" and "truncate" as well.
+
+
+------------ logon triggers
+
+create table log
+(
+action varchar(10),
+username varchar(20),
+duration timestamp
+);
+
+
+create or replace trigger tgr after logon on database
+begin
+insert into log values('Log on',user,systimestamp);
+end;
+
+
+Similarly, we can have triggers for "logoff,startup,shutdown".
+
+
+------------ instead of triggers
+
+These can be made only on views. Instead of performing the operation on the view, we perform that operation on the bsae tables. Eg.
+
+
+create table parent
+(
+id number,
+name varchar(20)
+);
+
+create table child
+(
+id number,
+cname varchar(20),
+pid number
+);
+
+
+create view family as
+select c.*,p.name
+from child c,parent p
+where c.pid = p.id;
+
+
+create or replace trigger tgr1 instead of insert on family
+begin
+ insert into parent values(:new.pid,:new.name);
+ insert into child values(:new.id,:new.cname,:new.pid);
+end;
+
+
+-------- conditional triggers
+
+These are fired on a specific condition only.
+
+------ updation of single column
+
+create or replace trigger tgr after update of salary on t2
+for each row
+begin
+dbms_output.put_line('Trigger Message : Salary Updated Just Now. Previous Salary : '||:old.Salary||' , New Salary : '||:new.Salary);
+end;
+
+
+------ updation of multiple columns
+
+create or replace trigger tgr after update of salary,comm on t2
+for each row
+begin
+dbms_output.put_line('Trigger Message : Salary Updated Just Now. Previous Salary : '||:old.Salary||' , New Salary : '||:new.Salary);
+end;
+
+
+--------- additional condition check
+
+create or replace trigger tgr after update of deptno on t2
+for each row
+when (old.deptno = 10)
+begin
+dbms_output.put_line('Trigger Message : Salary Updated Just Now. Previous Salary : '||:old.Salary||' , New Salary : '||:new.Salary);
+end;
+
+-------- compound trigger
+
+create or replace trigger tgr after update of deptno on t2
+follows tgr2                   -------------- tgr will be invoked just after tgr2
+when (old.deptno = 10)
+begin
+dbms_output.put_line('Trigger Message : Salary Updated Just Now. Previous Salary : '||:old.Salary||' , New Salary : '||:new.Salary);
+end;
+
+
+---------------- collections 
+
+VArray : VArray stands for varying array. Its maximum size along with the datatype needs to be specified beyond which it can't store
+any more values. We can have a one-dimensional varray only. 
+
+PL/SQL table : It doesn't have any fixed amount of size. We can have multi-dimensional array as well. Its datatype is can be decided
+dynamically.
+
+"first" returns first position.
+"last" returns last position.
+"prior" returns previous position.
+"next" returns next position.
+"count" returns existing items in the array.
+"next" returns total size of array.
+
+
+declare
+type va is varray(6) of number;
+coll va;
+begin
+coll := va(10,20,30,40,50);
+dbms_output.put_line('First Using Position : '||coll(1));
+dbms_output.put_line('Last Using Position : '||coll(5));
+dbms_output.put_line('First Using Attribute : '||coll(coll.first));
+dbms_output.put_line('Last Using Attribute : '||coll(coll.last));
+dbms_output.put_line('Prior To Third Using Position : '||coll(3-1));
+dbms_output.put_line('Next To Third Using Position : '||coll(3+1));
+dbms_output.put_line('Prior To Third Using Attribute : '||coll(coll.prior(3)));
+dbms_output.put_line('Next To Third Using Attribute : '||coll(coll.next(3)));
+dbms_output.put_line('Existing Items : '||coll.count);
+dbms_output.put_line('Total Size : '||coll.limit);
+end;
+
+
+VArray / Array / Varying Array :  All are same i.e.
+
+type va is varray(5) of number;
+type va is array(5) of number;
+type va is varying array(5) of number;
+
+
+---------- PL/SQL records
+
+It allows us to create a record of user-defined type. It has its own columns as decided by us.
+
+
+declare
+type rcd is record(id number,name varchar(20),salary number);        ----- definition of the record using the keyword "type"
+rcd1 rcd;                                                            ----- declaration of a record of type "rcd"
+begin
+select empno,ename,sal into rcd1.id,rcd1.name,rcd1.salary from emp where empno = 7839;
+dbms_output.put_line('Empno : '||rcd1.id);
+dbms_output.put_line('Name : '||rcd1.name);
+dbms_output.put_line('Salary : '||rcd1.salary);
+end;
+
+
+Output :
+
+Empno : 7839
+Name : KING
+Salary : 5000
+
+
+------ EXIT
+
+It brings the control out of the current loop only.
+
+------- CONTINUE
+
+It skips the rest of the lines' execution wherever it is used.
+
+------- to compile a procedure manually
+
+Alter procedure procedure_name compile;
+
+Whenever the table present in a procedure is deleted, the procedure becomes invalid. We need
+to recompile it manually so as to make it valid.
+
+-------------- SYS_REFCURSOR
+
+These are the special types which can be used to return recordsets out of the procedure as
+output parameters.
+
+Create or replace procedure proc_ref(id number,result out SYS_REFCURSOR) as
+Begin
+Open result for select * from emp where deptno = id;
+End;
+
+-------------- REFCURSOR
+
+It is a special datatype which can be used to hold the values returned by the SYS_REFCURSOR type variable.
+
+Var record REFCURSOR;
+
+Execute proc_ref(20,:record);
+
+Print record;
+
+Here, SYS_REFCURSOR is a type of weak REFCURSOR as it can contain data of any type with any number of columns in it.
+
+-------- creating a strongly typed REFCURSOR
+
+We need to create a package and in that, we need to define a REFCURSOR of the type that we need to return from a procedure.
+
+Create or replace package ref_pkg as
+Type record1 as REF CURSOR;
+Type record2 as REF CURSOR return emp%ROWTYPE;
+End;
+
+Create or replace procedure proc_ref(id number,result out ref_pkg.record2) as
+Begin
+Open result for select * from emp where deptno = id;
+End;
+
+Where "ref_pkg.record2" is a strongly typed REFCURSOR.
+
+-------------- EXECUTE IMMEDIATE
+
+This is a built-in procedure which is used to execute dynamic SQL. Using this, we can also
+execute DDL and DCL commands in the block.
+We can't perform a DML operation in a procedure by passing the name of a table in the SQL
+query. However, we can use this procedure to perform a dynamically constructed query.
+
+Create or replace procedure proc_ref(tbl varchar) as
+Begin
+delete || emp || where deptno = id;
+End;
+
+Create or replace procedure proc_ref(tbl varchar) as
+Begin
+Execute immediate 'delete '|| emp ||' where deptno = id';
+End;
+
+SQL%ROWCOUNT : It is used to store the count of records which were just retrieved/inserted/updated/deleted.
+
+However, we shouldn't use a "select" statement inside "execute immediate" procedure because it won't get executed. Rather, we can 
+use a REFCURSOR so as to store the prepared query and hence we can utilize that REFCURSOR accordingly. Eg.
+
+Create or replace package ref_pkg as
+Type record1 as REF CURSOR;
+Type record2 as REF CURSOR return emp%ROWTYPE;
+End;
+
+Create or replace procedure proc_ref(result out ref_pkg.record2) as
+query varchar(1000); ------ query prepared after combining all the parameters
+Begin
+Open result for query;
+End;
+
+However, we can store the results retrieved using "select" statement using "into" clause. The variable hence storing the output must 
+be of the same type as the "select" query is going to retrieve. Eg.
+
+Create or replace procedure proc1( ) as
+query varchar(1000); ------ query prepared after combining all the parameters
+record emp%rowtype;
+Begin
+Execute immediate query into record;
+dbms_output.put_line('Employee Name : '||record.ename||' , Salary : '||record.sal);
+End;
+
+-------------------------- returning clause
+
+This can be used to return the column/columns values of the latest inserted/updated/deleted record. Eg.
+
+--------- displaying data of the newly updated column of a record ( Update Operation )
+
+declare
+name varchar(20);
+begin
+update emp
+set sal = sal + 1000
+where empno = 7839
+returning ename into name;
+dbms_output.put_line('Employee : '||name||'''s Salary Updated Just Now...');
+end;
+
+--------- displaying data of the newly updated columns of a record ( Update Operation )
+
+declare
+name varchar(20);
+salary number;
+commission number;
+begin
+update emp
+set sal = sal + 1000
+where empno = 7839
+returning ename,sal,comm into name,salary,commission;
+dbms_output.put_line('Employee Details Updated Just Now. New Ones are...');
+dbms_output.put_line('Name : '||name||' , Salary : '||salary||' , Commission : '||commission);
+end;
+
+--------- displaying data of the newly updated column of a recordset ( Update Operation )
+
+"BULK COLLECT" is used to store multiple records into a variable of type "table".
+
+declare
+type sal_set is table of number;
+salaries sal_set;
+begin
+update emp
+set sal = sal + 100
+where rownum <= 10
+returning sal bulk collect into salaries;
+for i in 1..salaries.count
+loop
+dbms_output.put_line('Salary '||i||' : '||salaries(i));
+end loop;
+end;
+
+
+------- displaying data of the newly updated columns of a recordset ( Update Operation )
+
+create table demo as select sal,ename from emp;
+
+A new table is created because all the columns of the table must be there in the variable which would hold the records of that typed
+table(demo in this case).
+
+
+declare
+type recordset is table of demo%rowtype;
+records recordset;
+begin
+update demo
+set sal = sal + 100
+where rownum <= 10
+returning sal,ename bulk collect into records;
+for i in 1..records.count
+loop
+dbms_output.put_line('Salary '||i||' : '||records(i).sal||' , Name : '||records(i).ename);
+end loop;
+end;
+
+------- displaying data of the newly deleted columns of a recordset ( Delete Operation )
+
+declare
+type recordset is table of demo%rowtype;
+records recordset;
+begin
+delete demo
+where rownum <= 10
+returning sal,ename bulk collect into records;
+for i in 1..records.count
+loop
+dbms_output.put_line('Salary '||i||' : '||records(i).sal||' , Name : '||records(i).ename);
+end loop;
+end;
+
+
+------- displaying data of the newly inserted record ( Insert Operation )
+
+declare
+type recordset is table of demo%rowtype;
+records recordset;
+begin
+insert into demo values(11,'sdfs')
+returning sal,ename bulk collect into records;
+for i in 1..records.count
+loop
+dbms_output.put_line('Salary '||i||' : '||records(i).sal||' , Name : '||records(i).ename);
+end loop;
+end;
+
+After the returning clause gets the record which was just inserted, next time whenever the record will be inserted, the recordset
+will be overridden by that record. Hence, although the records will be inserted but the recordset would just have the details of
+the last record. Eg.
+
+declare
+type recordset is table of demo%rowtype;
+records recordset;
+begin
+insert into demo values(11,'Rohit')
+returning sal,ename bulk collect into records;
+insert into demo values(12,'Lucky')
+returning sal,ename bulk collect into records;
+for i in 1..records.count
+loop
+dbms_output.put_line('Salary '||i||' : '||records(i).sal||' , Name : '||records(i).ename);
+end loop;
+end;
+
+Output :
+
+Salary 1 : 12 , Name : Lucky
+
+
+-------------------------- FOR UPDATE clause
+
+This is used to lock particular rows and columns of a table until our operations are done so that any other user would not be able 
+to perform any operation on those many rows and columns.
+
+
+declare
+cursor cr is select empno,sal,ename from emp for update;              ----- locking all the columns
+begin
+for i in cr 
+loop
+update emp
+set sal = sal + 100
+where empno = i.empno;
+end loop;
+end;
+
+
+cursor cr is select empno,sal,ename from emp for update of sal;                            ----- locking column "sal"
+
+cursor cr is select empno,sal,ename from emp for update of sal,ename;                      ----- locking column "sal" and "ename"
+
+cursor cr is select empno,sal,ename from emp where empno = 7839 for update of sal;         ----- locking column "sal" 
+												  and row with empno = 7839
+
+cursor cr is select empno,sal,ename from emp where empno = 7839 for update of sal,ename;   ----- locking column "sal" and "ename"
+												  and row with empno = 7839
+
+
+-------------------------- CURRENT OF clause
+
+It is used to point to the current row present in the cursor and hence no need to fetch an extra column just to identify a record.
+
+
+declare
+cursor cr is select sal,ename from emp for update;        ----- locking all the columns
+begin
+for i in cr 
+loop
+update emp
+set sal = sal + 100
+where current of cr;       ----- preventing the use of an extra column (empno)
+end loop;
+end;
+
+CURRENT OF clause can only be used with FOR UPDATE clause.
+
+---------- copying a table from one schema to another along with its data ( dba privilege is required )
+
+copy from scott/sql@orcl to u1/u1@orcl create employee using select * from emp;
+
+--------- mutating problem in functions
+
+It may arise if we are reading and updating the data from the same table. It may be resolved if we avoid use of functions to read and
+write data of the same record.
+
+
+----------------------------------------------------------------------------------------------
+Doubts : 78,79,119 to 122,decode,cursor,how to disable a database trigger
+----------------------------------------------------------------------------------------------
+

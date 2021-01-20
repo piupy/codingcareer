@@ -1,0 +1,41 @@
+
+// Implementation of Tree using Linked List
+
+struct BinaryTree
+{
+ struct BinaryTree *left;
+ int info;
+ struct BinaryTree *right;
+};
+
+typedef struct BinaryTree node;
+
+void preOrderTraversal(node *root)
+{
+ if(root != NULL)
+ {
+   printf("%d",root->info);
+   preOrderTraversal(root->left);
+   preOrderTraversal(root->right);
+ }
+}
+
+void inOrderTraversal(node *root)
+{
+ if(root != NULL)
+ {
+   preOrderTraversal(root->left);
+   printf("%d",root->info);
+   preOrderTraversal(root->right);
+ }
+}
+
+void postOrderTraversal(node *root)
+{
+ if(root != NULL)
+ {
+   preOrderTraversal(root->left);
+   preOrderTraversal(root->right);
+   printf("%d",root->info);
+ }
+}

@@ -1,0 +1,72 @@
+Public Function fncValidate(chk As String) As Boolean
+If Len(Trim(chk)) = 0 Then
+fncValidate = False
+Else
+fncValidate = True
+End If
+End Function
+
+
+
+
+
+Public Sub prcValidate()
+If fncValidate(txtempno.Text) = False Then
+MsgBox "Please fill the Employee Number", , FillingForm
+vald = False
+txtempno.SetFocus
+Exit Sub
+Else
+vald = True
+End If
+If fncValidate(txttitle.Text) = False Then
+MsgBox "Please fill the Title", , FillingForm
+vald = False
+txttitle.SetFocus
+Exit Sub
+Else
+vald = True
+End If
+If fncValidate(txtName.Text) = False Then
+MsgBox "Please fill the Employee Name", , FillingForm
+vald = False
+txtName.SetFocus
+Exit Sub
+Else
+vald = True
+End If
+If fncValidate(txtdob.Text) = False Then
+MsgBox "Please fill the Date of Birth", , FillingForm
+vald = False
+txtdob.SetFocus
+Exit Sub
+Else
+vald = True
+End If
+If fncValidate(txtdoj.Text) = False Then
+MsgBox "Please fill the Date of Joining", , FillingForm
+vald = False
+txtdoj.SetFocus
+Exit Sub
+Else
+vald = True
+End If
+If fncValidate(txtqua.Text) = False Then
+MsgBox "Please fill the Qualification", , FillingForm
+vald = False
+txtqua.SetFocus
+Exit Sub
+Else
+vald = True
+End If
+
+If fncValidate(txtRate.Text) = False Then
+MsgBox "Please fill the Rate", , FillingForm
+vald = False
+txtRate.SetFocus
+Exit Sub
+Else
+vald = True
+End If
+
+End Sub

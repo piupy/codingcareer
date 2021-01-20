@@ -1,0 +1,120 @@
+#include<iostream>
+#include<vector>
+#include<list>
+#include<algorithm>
+#include<conio.h>
+using namespace std;
+
+class student;
+
+typedef vector<student> vec;
+
+class student
+{
+	char name[20];
+	int roll;
+public:
+	void input(void);
+	void output(void);
+	friend void get_name(vec &,int);
+	friend void get_roll(vec &,string);
+};
+
+void student :: input(void)
+{
+	cout<<"\n\nEnter The Name of Student :  ";
+	cin>>name;
+	cout<<"\nEnter The Roll Number of Student :  ";
+	cin>>roll;
+}
+
+void student :: output(void)
+{
+	cout<<"\n\nName of Student :  "<<name;
+	cout<<"\n\nRoll Number :  "<<roll;
+}
+
+void get_name(vec &v,int r)
+{
+	int flag=0;
+	for(int i=0;i<v.size();i++)
+	{
+		if( v[i].roll == r)
+		{
+			v[i].output();
+			flag=1;
+		}
+	}
+	if(flag==0)
+	cout<<"\n\nStudent With Roll Number \""<<r<<"\" Not Found...";
+}
+
+void get_roll(vec &v,string r)
+{
+	int flag=0;
+	for(int i=0;i<v.size();i++)
+	{
+		if( v[i].name == r)
+		{
+			v[i].output();
+			flag=1;
+		}
+	}
+	if(flag==0)
+	cout<<"\n\nStudent With Name \""<<r<<"\" Not Found...";
+}
+
+int main(void)
+{
+	cout<<"How Many Objects You Want To Create :  ";
+	int total,i;
+	cin>>total;
+	cout<<"\n\nCreating "<<total<<" Objects of Class \"Student\" ...";
+	student s1;
+	vec v1;
+	for(i=0;i<total;i++)
+	{
+		cout<<"\n\n\nEnter The Details of Student No. "<<i+1<<" --->\n";
+		s1.input();
+		v1.push_back(s1);
+	}
+	vec :: iterator itr;
+	for(i=0,itr=v1.begin();i<total;i++,itr++)
+	{
+		cout<<"\n\n\nStudent No. "<<i+1<<" --->\n";
+		itr->output();
+	}
+	int find_roll;
+	string find_name;
+	cout<<"\n\n\n\nSearch By Using The ";
+	cout<<"\n\n1.  Roll Number";
+	cout<<"\n2.  Name";
+    cout<<"\n\n\nEnter Your Choice :  ";
+    int ch;
+    cin>>ch;
+    	switch(ch)
+    	{
+    	case 1 : {
+    				cout<<"\n\nEnter The Roll Number of The Student :  ";
+    				cin>>find_roll;
+    				get_name(v1,find_roll);
+    				break;
+    		 }
+
+       	case 2 : {
+       				cout<<"\n\nEnter The Name of The Student ( Case Sensitive Search ) :  ";
+       				cin>>find_name;
+       				get_roll(v1,find_name);
+       				break;
+       	         }
+
+       default : {
+       				cout<<"\n\nInvalid Input...\n\n";
+       				break;
+                 }
+    	}
+ 	cout<<"\n\n\nPress Any Key To Continue...";
+	getch();
+	return(0);
+}
+

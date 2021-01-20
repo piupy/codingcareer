@@ -1,0 +1,57 @@
+#include<iostream>
+#include<cstdio>
+#include<cstring>
+#include<conio.h>
+using namespace std;
+
+int main(void)
+{
+ int n=0,i;
+ static int count=0;
+ string data[20];
+  cout<<"Enter The City Names Below. Enter \"X\" To End Reading\n\n";
+  	for(i=0;;i++)
+  	{
+  		cout<<"\n\nCity "<<(i+1)<<" :    ";
+  		getline(cin,data[i]);
+  			if( data[i] == "x" or data[i] == "X" )
+  			{
+  				break;
+  			}
+  			else
+  			{
+  				n++;
+  			}
+  	}
+  	cout<<"\n\n\""<<n<<"\" City Names Successfully Entered...";
+	for(i=0;i<n;i++)
+	{
+		if( data[i][0] == 'B' || data[i][0] == 'b' || data[i][0] == 'C' || data[i][0] == 'c' )
+		{
+			count++;
+		}
+		cout<<"\n\nCity "<<(i+1)<<" :    "<<data[i];
+	}
+ if( count > 0 )
+ {
+ cout<<"\n\n\n\nCity Names Starting With \'B\' or \'C\'";
+ count=0;
+	for(i=0;i<n;i++)
+	{
+		if( data[i][0] == 'B' || data[i][0] == 'b' || data[i][0] == 'C' || data[i][0] == 'c' )
+		{
+			cout<<"\n\nCity "<<(count+1)<<" :    "<<data[i];
+			count++;
+		}
+	}
+	cout<<"\n\n";
+ }
+ else
+ {
+	cout<<"\n\n\n\nNo City Found Starting With \'B\' or \'C\'\n\n";
+ }
+ cout<<"\nPress Any Key To Continue.....";
+ getch();
+ return(0);
+}
+

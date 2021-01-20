@@ -1,0 +1,129 @@
+#include<iostream>
+#include<cstdio>
+#include<vector>
+#include<list>
+#include<algorithm>
+#include<conio.h>
+using namespace std;
+
+class item;
+
+typedef vector<item> vec;
+
+class item
+{
+	string item_name;
+	int units_sold;
+	float unit_price;
+public:
+	void input(void);
+	void output(void);
+};
+
+void item :: input(void)
+{
+	cout<<"\n\nEnter The Name of item :  ";
+	cin>>item_name;
+	cout<<"\nEnter The Number of Units Sold :  ";
+	cin>>units_sold;
+	cout<<"\nEnter The Unit Price of Item :  ";
+	cin>>unit_price;
+}
+
+void item :: output(void)
+{
+	cout<<"\n\nItem Name :  \""<<item_name<<"\"";
+	cout<<"\nUnits Sold :  "<<units_sold<<" units";
+	cout<<"\nUnit Price :  Rs."<<unit_price;
+	cout<<"\nTotal Sale :  Rs."<<units_sold*unit_price;
+}
+
+int main(void)
+{
+	cout<<"How Many Objects You Want To Create :  ";
+	int total,i;
+	cin>>total;
+	cout<<"\n\nCreating "<<total<<" Objects of Class \"Item\" ...";
+	item s1;
+	vec v1;
+	for(i=0;i<total;i++)
+	{
+		cout<<"\n\n\nEnter The Details of Item No. "<<i+1<<" --->\n";
+		s1.input();
+		v1.push_back(s1);
+	}
+	vec :: iterator itr;
+	int ch=1;
+	while(ch)
+	{
+		cout<<"\n\nWhat Do You Want To Do ?";
+		cout<<"\n\n1. Delete A Specified Item";
+		cout<<"\n2. Add an item At The Specified Location";
+		cout<<"\n3. Add an item At The End";
+		cout<<"\n4. Print The Contents of Vector";
+		cout<<"\n5. Exit";
+		cout<<"\n\nEnter Your Choice :  ";
+		cin>>ch;
+			switch(ch)
+			{
+				case 1 : {
+							cout<<"\n\nWhich Item You Want To Delete From The List ?";
+							cout<<"\n\nDelete The Item At Place :  ";
+							int place;
+							cin>>place;
+							v1.erase( ( v1.begin() ) + (place-1));
+							cout<<"\n\nItem Deleted Successfully...\n\n";
+							break;
+						 }
+
+				case 2 : {
+							cout<<"\n\nAt Which Place You Want To Add The Item ?";
+							cout<<"\n\nPlace :  ";
+							int place;
+							cin>>place;
+							item push_item;
+							push_item.input();
+							v1.insert( ( ( v1.begin() ) + (place-1) ),push_item);
+							cout<<"\n\nItem Deleted Successfully...\n\n";
+							break;
+						 }
+
+				case 3 : {
+							item push_item;
+							push_item.input();
+							v1.push_back(push_item);
+							cout<<"\n\nItem Successfully Added At The End...\n\n";
+							break;
+						 }
+
+				case 4 : {
+							cout<<"\n\nShowing The Details of The List Items...\n\n";
+							for(i=0,itr=v1.begin();itr!=v1.end();i++,itr++)
+							{
+								cout<<"\n\n\nItem No. "<<i+1<<" --->\n";
+								itr->output();
+							}
+							break;
+						 }
+
+				case 5 : {
+							cout<<"\n\nThank You...\n\n";
+							ch=0;
+							break;
+						 }
+
+			   default : {
+				   	   	    cout<<"\n\nInvalid Input...\n\n";
+							break;
+						 }
+			}
+
+	}
+
+   cout<<"\n\n\nPress Any Key To Continue...";
+   getch();
+   return(0);
+}
+
+
+

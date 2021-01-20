@@ -1,0 +1,212 @@
+
+-------------- Everything About Object Types and Nested Tables --------------------------
+
+
+-- 1. Handling Multiple Mobile Numbers --------------------------------------------------
+
+
+create type Mobiles as table of varchar(10);
+
+
+create table person
+(
+Id int,
+Name varchar(20),
+Mobile Mobiles
+)nested table Mobile store as person;
+
+
+-- Inserting Records
+
+insert into person values(1,'A',Mobiles('9876543210','1234567890','9876123450'));
+insert into person values(2,'B',Mobiles('9846843210','123843890','9876123746'));
+insert into person values(3,'C',Mobiles('9876543279','1234567126','987612376'));
+
+
+-- Retrieving Records
+
+select column_value from 
+table(select mobile from person where id = 1);
+
+
+-- Inserting a new mobile number
+
+insert into table(select mobile from person where id = 1) values('4567891230');
+
+
+-- Updating the existing mobile number
+
+update table(select mobile from person where id = 1)
+set column_value = '4567891250'
+where column_value = '4567891230';
+
+
+-- Deleting a Mobile Number
+
+delete table(select mobile from person where id = 1)
+where column_value = '4567891250';
+
+
+-------------------------------------------------------------------------------------------
+
+-- 2. Creating a user-defined Address type
+
+
+create type city as object
+(
+cid int,
+country varchar(20)
+);
+
+
+create type address as object
+(
+hno int,
+cty city
+);
+
+
+create table student
+(
+Id int,
+Name varchar(20),
+Addr address
+);
+
+
+-- Inserting records
+
+insert into student values(1,'A',address(101,city(201,'India')));
+insert into student values(2,'B',address(102,city(202,'USA')));
+insert into student values(3,'C',address(103,city(203,'UK')));
+
+
+-- Retrieving Address components
+
+select id,name,s.addr.hno "House No.",s.addr.cty.cid "City ID",s.addr.cty.country "Country"
+from student s;
+
+
+-- Updating an existing address
+
+update student s
+set s.addr.cty.country = 'UAE'
+where id = 3;
+
+
+-- Deleting a record
+
+delete student 
+where id = 3;
+
+
+-------------------------------------------------------------------------------------
+
+-- 3. Handling multiple addresses of a single person
+
+
+create type city as object
+(
+cid int,
+country varchar(20)
+);
+
+
+create type address as object
+(
+hno int,
+cty city
+);
+
+
+create type addresses as table of address;
+
+
+create table player
+(
+Id int,
+Name varchar(20),
+Addr addresses
+)nested table Addr store as obj;
+
+
+-- Inserting records  
+
+
+insert into player values(1,'A',addresses(
+					   address(101,city(201,'India')),
+					   address(102,city(202,'USA')),
+					   address(103,city(203,'UK'))
+					  )
+                           );
+insert into player values(2,'B',addresses(
+					   address(104,city(204,'Canada')),
+					   address(105,city(205,'France')),
+					   address(106,city(206,'UAE'))
+					  )
+                           );
+insert into player values(3,'C',addresses(
+					   address(107,city(207,'Iran')),
+					   address(108,city(208,'Iraq')),
+					   address(109,city(209,'Italy'))
+					  )
+                           );
+
+
+-- Retrieving address components of a record 
+
+select hno "House No.",p.cty.cid "City ID",p.cty.country "Country"
+from table(select addr from player where id = 3) p;
+
+
+-- Inserting a new address
+
+insert into table(select addr from player where id = 3) values(address(110,city(210,'China')));
+
+
+-- Updating an existing address
+
+update table(select addr from player where id = 3) p
+set p.cty.country = 'Russia'
+where p.cty.cid = 210;
+
+
+-- Deleting an address
+
+delete table(select addr from player where id = 3) p
+where hno = 110;
+
+
+
+-- Getting all the addresses at once
+
+
+declare
+cursor c is select id from player;
+n number;
+query varchar(2000);
+query1 varchar(150) := 'select hno "House No.",p.cty.cid "City ID",p.cty.country "Country"
+from table(select addr from player where id = ';
+query2 varchar(5) := ') p';
+counter int;
+total int;
+begin
+select count(*) into total from player;
+open c;
+fetch c into n;
+query := query1||n||query2;
+counter := 1;
+if(total > 1) then
+fetch c into n;
+while(counter <= total-1)
+loop
+query := query||' union '||query1||n||query2;
+fetch c into n;
+counter := counter + 1;
+end loop;
+end if;
+dbms_output.put_line(query);
+close c;
+end;
+
+

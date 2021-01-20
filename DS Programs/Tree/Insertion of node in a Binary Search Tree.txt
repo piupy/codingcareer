@@ -1,0 +1,47 @@
+
+// Insertion of node in a Binary Search Tree
+
+struct BSTNode
+{
+ struct BSTNode *left;
+ int info;
+ struct BSTNode *right;
+};
+
+typedef struct BSTNode node;
+
+void insert(node *root,int data)
+{
+ node *parent;
+ node *n = malloc(sizeof(node));
+ n->left = NULL;
+ n->info = data;
+ n->right = NULL;
+
+ if(root == NULL)
+  root = n;
+ else
+ {
+  parent = root;
+  while(parent != NULL)
+  {
+    if(parent->data > data)
+    {
+      if(parent->left == NULL)
+      {
+        parent->left = n;
+      }
+      parent = parent->left;
+    }  // end of if
+    else if(parent->info < data)
+    {
+      if(parent->right == NULL)
+      {
+        parent->right = n;
+      }
+      parent = parent->right;
+    }
+  } // end of while  
+ }  // end of else
+}
+

@@ -1,0 +1,227 @@
+
+>>>>>>>>>>>>>> MongoDB notes <<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+
+show dbs : to check all the databases. If the db doesn't have any collection. Its name will not be seen
+
+use your_db_name : to use an existing database. If it doesn't exist, it will create a new one and select it
+
+db : to check the current database
+
+db.dropDatabase() : to drop the current database
+
+show collections : to list all the database collections
+
+db.createCollection('posts') : to create a collection
+
+To insert a document :
+
+
+db.posts.insert({
+  title: 'Post One',
+  body: 'Body of post one',
+  category: 'News',
+  tags: ['news', 'events'],
+  user: {
+    name: 'John Doe',
+    status: 'author'
+  },
+  date: Date()
+})
+
+Date() : current date
+
+To insert multiple documents :
+
+
+db.posts.insertMany([
+  {
+    title: 'Post Two',
+    body: 'Body of post two',
+    category: 'Technology',
+    date: Date()
+  },
+  {
+    title: 'Post Three',
+    body: 'Body of post three',
+    category: 'News',
+    date: Date()
+  },
+  {
+    title: 'Post Four',
+    body: 'Body of post three',
+    category: 'Entertainment',
+    date: Date()
+  }
+])
+
+
+
+To list all the data :
+
+db.posts.find()
+
+db.posts.find().pretty() : to print in JSON format
+
+db.posts.find({"category":"News"}).pretty() : to filter where "category" : "News"
+
+db.posts.find({"category":"News"}).sort({title:1}).pretty()  : to sort in ascending order
+
+db.posts.find({"category":"News"}).sort({title:-1}).pretty()  : to sort in descending order
+
+db.posts.find({"category":"News"}).sort({title:1}).count() : to count the number of documents
+
+db.posts.find({"category":"News"}).sort({title:1}).limit(2) : to limit the number of documents
+
+
+implementing foreach loop :
+
+db.posts.find().forEach(function(post) {
+  print("Blog Post: " + post.title)
+})
+
+
+finding 1 document :
+
+
+db.posts.findOne({ category: 'News' })  : it has built-in pretty() and limit(1) methods
+
+
+
+finding selected fields :
+
+
+db.posts.find({ title: 'Post One' }, {
+  title: 1
+})
+
+
+
+updating a document :
+
+-------------------------
+
+db.posts.update({ title: 'Post Two' },
+{
+  title: 'Post Two - changed',
+  body : "New body for post 2",
+  date: Date()
+})
+
+
+it will replace the original body with this body if found else no change.
+
+-------------------------------
+
+db.posts.update({ title: 'Post Two' },
+{
+  title: 'Post Two - changed',
+  body : "New body for post 2",
+  date: Date()
+},
+{
+  upsert: true
+})
+
+
+it will replace the original body with this body if found else create a new document.
+
+
+--------------------------------
+
+
+If we need to update specific fields :
+
+
+db.posts.update({ title: 'Post Two - changed' },
+{
+  $set: {
+    body: 'I am new body',
+    category: 'Technology',
+  }
+})
+
+
+it will replace the specific fields with these values if found else create new fields with those names 
+and values in the first document only.
+
+"$set" has inbuilt "upsert" functionality.
+
+--------------------------------
+
+
+db.posts.updateMany({ title: 'Post Two - changed' },
+{
+  $set: {
+    body: 'I am new body',
+    category: 'Technology',
+  }
+})
+
+
+it will replace the specific fields with these values if found else create new fields with those names 
+and values in all the documents.
+
+--------------------------------------------
+
+to increment a field value of first record only :
+
+
+db.posts.update({ title: 'Post Two' },
+{
+  $inc: {
+    likes: 5
+  }
+})
+
+-------------------------------------------
+
+
+to increment a field value of multiple records :
+
+
+db.posts.updateMany({ title: 'Post Two' },
+{
+  $inc: {
+    likes: 5
+  }
+})
+
+---------------------------------------
+
+renaming the fields :
+
+
+db.posts.updateMany({ title: 'Post Two - changed' },
+{
+  $rename: {
+    likes: 'mylikes',
+    views: 'myviews'
+  }
+})
+
+-----------------------------------------------
+
+renaming all the fields :
+
+db.posts.updateMany({},
+{
+  $rename: {
+    title: 'title2'
+  }
+})
+
+
+-----------------------------------------------
+
+deleting documents :
+
+db.posts.remove({ title: 'Post Four' })   // usually "_id" is used
+
+db.posts.remove({ "_id" : ObjectId("5f16f6706c8483e644da96d9")})
+
+
+
+
+
+

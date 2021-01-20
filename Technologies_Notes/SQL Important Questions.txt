@@ -1,0 +1,79 @@
+
+1. Prepare salary structure of an employee provided his/her basic salary. Accordingly retrieve his gross
+salary as and when required.
+
+2. Find nth highest salary from the top and bottom of an organization.
+
+3. Find nth record present physically in a table.
+
+4. Given following table
+
+create table sample
+(
+id number,
+name varchar(2),
+salary number(8,2)
+);
+
+insert into sample values(104,'D',40000);
+insert into sample values(102,'B',20000);
+insert into sample values(105,'E',50000);
+insert into sample values(101,'A',10000);
+insert into sample values(103,'C',30000);
+insert into sample values(108,'H',80000);
+insert into sample values(110,'J',100000);
+insert into sample values(106,'F',60000);
+insert into sample values(109,'I',90000);
+insert into sample values(107,'G',70000);
+
+Write a query to retrieve only the last 3 records.
+
+
+5. Find m to n records present physically in a table.
+
+6. Retrieve employees present in a table who have an experience of 3-5 years
+
+7. Given date of birth of an employee. Find his present age in years,months,days.
+
+8. Write the query to convert a number into words.
+
+9. Replace the names of cities column of a table with each other. Eg. New Delhi should be replaced with Mumbai and vice-versa. Use 
+only one query.
+
+10. Perform all DML operations on a table using a single procedure.
+
+11. Find median record(s) from a table.
+
+12. Find the number of times a particular character/string comes in a string.
+
+13. Print the following pattern :
+
+*
+**
+***
+****
+
+14. Find the HCF and LCM of two numbers.
+
+15. Check whether a number is palindrome or not.
+
+16. Check whether a number is armstrong or not.
+
+17. Prepare and manage the roster of a company.
+
+18. Display salary along with sorted salary.
+
+19. Remove a character from the beginning, middle and end of a string.
+
+20. How to check whether a given year is leap or not.
+
+21. How to print all the addresses of all the employees at once.
+
+22. How to print name,subject and marks along with the subtotals and grand total with name printed at once.
+
+23. How to detect maximum credited account number.
+
+24. How to populate sample data.
+
+25. How to get the Employees and the projects handled by them.
+

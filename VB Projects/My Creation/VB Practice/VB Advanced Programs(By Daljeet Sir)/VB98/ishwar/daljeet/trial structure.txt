@@ -1,0 +1,8 @@
+SQL> describe trial;
+ Name                            Null?    Type
+ ------------------------------- -------- ----
+ ECODE                                    CHAR(5)
+ ENAME                                    CHAR(20)
+ ESAL                                     NUMBER(10,2)
+ EPHONE                                   CHAR(15)
+ EDOJ                                     DATE

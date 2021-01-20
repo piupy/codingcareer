@@ -1,0 +1,28 @@
+#include<iostream>
+#include<cstdio>
+#include<cstring>
+#include<conio.h>
+using namespace std;
+
+int main(void)
+{
+	string s("123456789");
+	int space=5,i,j,k,l;
+	int n=space-1,col=1;
+	for(i=1;i<=space;i++)
+	{
+   	cout<<"\n\n\t\t";
+		for(k=1;k<=n;k++)
+			cout<<"  ";
+		for(j=i;j<=col;j++)
+			cout<<j<<"  ";
+		for(l=col-1;l>=i;l--)
+					cout<<l<<"  ";
+               cout<<"\n\n";
+		col=col+2;
+		n--;
+	}
+	cout<<"\n\nPress Any Key To Continue.....";
+	getchar();
+   return(0);
+}

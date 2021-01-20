@@ -1,0 +1,28 @@
+#include<iostream>
+#include<cstdio>
+#include<conio.h>
+#include<cstring>
+using namespace std;
+
+int main(void)
+{
+	string s,search;
+	cout<<"Enter The Line of Text :    ";
+	int i,count=0;
+	getline(cin,s);
+	cout<<"\n\nYou Entered :   "<<s;
+	cout<<"\n\nEnter The String You Want To Search :    ";
+	cin>>search;
+		for(i=0;i<s.length();i++)
+		{
+			if( s.compare(i,2,search) == 0 )
+				count++;
+		}
+	if( count == 0 )
+		cout<<"\n\n\""<<search<<"\" Not Found in The Line.\n\n";
+	else
+		cout<<"\n\n\""<<search<<"\" Found "<<count<<" Times in The Line.\n\n";
+	cout<<"Press Any Key To Continue.....";
+	getch();
+	return(0);
+}

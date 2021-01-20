@@ -1,0 +1,42 @@
+#include<iostream>
+#include<conio.h>
+using namespace std;
+
+namespace Constants
+{
+	namespace fixed
+	{
+		int i=10;
+		char c='R';
+	}
+	namespace real
+	{
+		float f=20.0f;
+		double d=30.0;
+	}
+}
+
+int main()
+{
+	cout<<"Printing The Values of Different Constants...";
+	cout<<"\n\nIntegral & Char Constants :";
+	cout<<"\n\nI ( int ) =  "<<Constants::fixed::i;
+	cout<<"\nC ( char ) =  \'"<<Constants::fixed::c<<"\'";
+	cout<<"\n\nReal Constants :";
+	cout<<"\n\nF ( float ) =  "<<Constants::real::f;
+	cout<<"\nD ( double ) =  "<<Constants::real::d;
+
+	/* Alternate Way
+	using namespace Constants;
+	cout<<"\n\n\n\nPrinting The Values of Different Constants...";
+	cout<<"\n\nIntegral & Char Constants :";
+	cout<<"\n\nI ( int ) =  "<<fixed::i;
+	cout<<"\nC ( char ) =  \'"<<fixed::c<<"\'";
+	cout<<"\n\nReal Constants :";
+	cout<<"\n\nF ( float ) =  "<<real::f;
+	cout<<"\nD ( double ) =  "<<real::d;
+	*/
+	cout<<"\n\n\nPress Any Key To Continue...";
+	getch();
+	return(0);
+}
