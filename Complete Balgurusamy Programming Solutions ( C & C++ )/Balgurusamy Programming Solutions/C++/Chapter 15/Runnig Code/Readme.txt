@@ -1,1 +1,0 @@
-These executuble files(.exe) were compiled under Windows 64-bit operating system so may not work on 32-bit operating system.
